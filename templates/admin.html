@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="admin-container">
+    <h1>Sermon Manager — Admin</h1>
+
+    <!-- Add Series -->
+    <section class="admin-section">
+        <h2>Add New Series</h2>
+        <form method="POST" action="/admin/add-series">
+            <div class="form-group">
+                <label>Series Name</label>
+                <input type="text" name="name" required>
+            </div>
+            <div class="form-group">
+                <label>Series Image URL</label>
+                <input type="text" name="image_url" placeholder="https://...">
+            </div>
+            <button type="submit">Add Series</button>
+        </form>
+    </section>
+
+    <!-- Add Sermon -->
+    <section class="admin-section">
+        <h2>Add New Sermon</h2>
+        <form method="POST" action="/admin/add-sermon">
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" name="title" required>
+            </div>
+            <div class="form-group">
+                <label>Date</label>
+                <input type="date" name="date" required>
+            </div>
+            <div class="form-group">
+                <label>Speaker</label>
+                <input type="text" name="speaker">
+            </div>
+            <div class="form-group">
+                <label>Topic</label>
+                <input type="text" name="topic">
+            </div>
+            <div class="form-group">
+                <label>Book</label>
+                <input type="text" name="book">
+            </div>
+            <div class="form-group">
+                <label>Audio URL (from Archive.org)</label>
+                <input type="text" name="audio_url" placeholder="https://archive.org/download/...">
+            </div>
+            <div class="form-group">
+                <label>Series</label>
+                <select name="series_id">
+                    <option value="">-- No Series --</option>
+                    {% for s in series %}
+                    <option value="{{ s.id }}">{{ s.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+              <label>Sermon Image URL</label>
+              <input type="text" name="image_url" placeholder="https://...">
+            </div>
+            <button type="submit">Add Sermon</button>
+        </form>
+    </section>
+
+    <!-- Existing Sermons -->
+    <section class="admin-section">
+        <h2>All Sermons</h2>
+        {% if sermons %}
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Date</th>
+                    <th>Speaker</th>
+                    <th>Series</th>
+                    <th>Audio</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sermon in sermons %}
+                <tr>
+                    <td><a href="/sermon/{{ sermon.id }}">{{ sermon.title }}</a></td>
+                    <td>{{ sermon.date }}</td>
+                    <td>{{ sermon.speaker or "—" }}</td>
+                    <td>{{ sermon.series_name or "—" }}</td>
+                    <td>{{ "✓" if sermon.audio_url else "✗" }}</td>
+                    <td>
+                        <form method="POST" action="/admin/delete-sermon/{{ sermon.id }}">
+                            <button type="submit" class="delete-btn">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No sermons yet.</p>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

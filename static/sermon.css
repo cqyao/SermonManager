@@ -1,0 +1,73 @@
+.sermon-detail-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+.sermon-meta {
+    font-size: 0.9rem;
+    color: #666;
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.sermon__image img {
+  display: block;
+  width: 100%;
+  margin: 0;
+  border-radius: 10px 10px 0 0;
+}
+
+.sermon-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 30px;
+    font-size: 0.95rem;
+}
+
+.sermon__info--speaker {
+  display: flex;
+  flex-direction: row;
+  background-color: #17242A; 
+  height: clamp(30px, 50px, 70px); 
+  margin-top: 0;
+  color: var(--white-color);
+  align-content: center;
+  align-items: center;
+  padding: 10px;
+  border-radius: 0 0 10px 10px;
+}
+
+.sermon__info--speaker-image {
+  height: 25px;
+  width: 25px;
+  border-radius: 50px;
+  margin-right: 10px;
+  border: 0.5px solid lightgray;
+}
+
+.audio-player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.audio-player audio {
+    width: 100%;
+    margin: 10px 0;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 20px;
+    color: #2a7a7a;
+    text-decoration: none;
+}
+
+.no-audio {
+    color: #999;
+    font-style: italic;
+    margin-top: 20px;
+}

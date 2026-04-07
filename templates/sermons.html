@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='sermons.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1 class="large-text--light">Sermons</h1>
+</div>
+
+<div class="sermons-container">
+  <div class="sermon-grid">
+    {% for sermon in sermons %}
+    <a href="/sermon/{{ sermon.id }}" class="card__link">
+      <div class="card">
+        <div class="card__image">
+          {% if sermon.image_url %}
+          <img src="{{ sermon.image_url }}" alt="{{ sermon.series_name }}">
+          {% else %}
+          <div class="card__image--placeholder"></div>
+          {% endif %}
+        </div>
+        <div class="card__body">
+          <div class="card__meta">
+            <span class="card__date tiny-text--light">{{ sermon.date }}</span>
+            {% if sermon.series_name %}
+            <span>|</span>
+            <span class="card__series--label tiny-text--light">Series: </span>
+            <span class="card__series--name tiny-text--light">{{ sermon.series_name }}</span>
+            {% endif %}
+          </div>
+          <hr>
+          <h2 class="card__title small-text--bold">{{ sermon.title }}</h2>
+          <div class="card__details">
+            {% if sermon.speaker %}
+            <span>Speaker: <strong>{{ sermon.speaker }}</strong></span>
+            {% endif %}
+            {% if sermon.topic %}
+            <span>Topic: <strong>{{ sermon.topic }}</strong></span>
+            {% endif %}
+            {% if sermon.book %}
+            <span>Book: <strong>{{ sermon.book }}</strong></span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </a>
+    {% else %}
+    <p>No sermons found.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

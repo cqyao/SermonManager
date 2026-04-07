@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='sermon.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1 class="large-text--light">{{ sermon.title }}</h1>
+</div>
+
+<div class="sermon-detail-container">
+  <a href="/sermons" class="back-link mb2">← Back to Sermons</a>
+  <hr class="mb2">
+  <div class="sermon__title medium-text--bold mb1">
+    <span>{{ sermon.title }}</span>
+  </div>
+  <div class="sermon-meta">
+    <span>{{ sermon.date }}</span>
+    {% if sermon.series_name %}
+    <span>|</span>
+    <span>Series: <a href="/series/{{ sermon.series_id }}">{{ sermon.series_name }}</a></span>
+    {% endif %}
+  </div>
+  <div class="sermon__image">
+    {% if sermon.image_url %}
+    <img src="{{ sermon.image_url }}" alt="{{ sermon.series_name }}">
+    {% else %}
+    <div class="sermon__image--placeholder"></div>
+    {% endif %}
+    <div class="sermon__info--speaker tiny-text--light">
+      <div class="sermon__info--speaker-image">
+        
+      </div>
+      {% if sermon.speaker %}
+      <p>{{ sermon.speaker }}</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- <div class="sermon-info">
+    {% if sermon.speaker %}
+    <p>Speaker: <strong>{{ sermon.speaker }}</strong></p>
+    {% endif %}
+    {% if sermon.topic %}
+    <p>Topic: <strong>{{ sermon.topic }}</strong></p>
+    {% endif %}
+    {% if sermon.book %}
+    <p>Book: <strong>{{ sermon.book }}</strong></p>
+    {% endif %}
+  </div> -->
+
+  {% if sermon.audio_url %}
+  <div class="audio-player">
+    <p class="mt2">LISTEN TO SERMON</p>
+    <audio controls>
+      <source src="{{ sermon.audio_url }}" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+  {% else %}
+  <p class="no-audio">No audio available for this sermon.</p>
+  {% endif %}
+
+
+</div>
+{% endblock %}

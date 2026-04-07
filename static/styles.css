@@ -1,0 +1,159 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+  font-family: var(--font-primary);
+}
+
+hr {
+  border: 0.5px solid #ccc;
+}
+
+.mb1 {
+  margin-bottom: 8px;
+}
+
+.mb2 {
+  margin-bottom: 16px;
+}
+
+.mt1 {
+  margin-top: 8px;
+}
+
+.mt2 {
+  margin-top: 16px;
+}
+
+:root {
+  --primary-color: #253238;
+  --font-primary:  'Oswald', sans-serif;
+  --white-color: #fff;
+  --highlight-color: #27C6DA;
+  --normal-text-color: #546E7A;
+}
+
+.large-text--light {
+  font-size: 2rem;
+  font-weight: 100;
+}
+
+.medium-text--bold {
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.small-text--bold {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--primary-color);  
+}
+
+.tiny-text--light {
+  font-size: 0.7rem;
+  font-weight: 100;
+}
+
+.navigation-bar nav {
+  display: flex;
+  background-color: var(--white-color);
+  color: var(--primary-color);
+  height: auto;
+  padding: clamp(5px, 20px, 20px) clamp(10px, 20px, 100px);
+  align-items: center;
+  gap: 50px;
+}
+
+.navigation-bar nav a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: 1.2rem;
+}
+
+
+.page-header {
+    background: #1a2a2a;
+    color: white;
+    padding: clamp(10px, 30px, 60px) 20px;
+    text-align: center;
+}
+
+.admin-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.admin-section {
+    margin-bottom: 50px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid #ddd;
+}
+
+.admin-section h2 {
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #444;
+}
+
+.form-group input,
+.form-group select {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    width: 100%;
+}
+
+button[type="submit"] {
+    padding: 10px 24px;
+    background: #1a2a2a;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.delete-btn {
+    padding: 4px 12px;
+    background: #cc3333;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.admin-table th,
+.admin-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.admin-table th {
+    background: #f5f5f5;
+    font-weight: bold;
+}
+

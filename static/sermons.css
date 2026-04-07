@@ -1,0 +1,85 @@
+.sermons-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.sermon-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 24px;
+}
+
+.card__link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.card {
+    text-decoration: none;
+    background-color: var(--white-color);
+    color: inherit;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.card__image img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+.card__image--placeholder {
+    width: 100%;
+    height: 200px;
+    background: #ccc;
+}
+
+.card__body {
+    padding: 16px;
+}
+
+.card__meta {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 8px;
+    display: flex;
+    gap: 8px;
+}
+
+.card__date {
+  font-style: italic;
+  color: var(--normal-text-color);
+
+}
+
+.card__series--label {
+    color: var(--normal-text-color);
+}
+.card__series--name {
+    color: var(--highlight-color);
+}
+
+.card__title {
+    margin-bottom: 10px;
+}
+
+.card__details {
+    font-size: 0.85rem;
+    color: #444;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+@media (width > 430px) {
+  .sermon-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
