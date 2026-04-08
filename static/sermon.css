@@ -27,7 +27,7 @@
     font-size: 0.95rem;
 }
 
-.sermon__info--speaker {
+.sermon__info {
   display: flex;
   flex-direction: row;
   background-color: #17242A; 
@@ -36,15 +36,22 @@
   color: var(--white-color);
   align-content: center;
   align-items: center;
-  padding: 10px;
+  padding: 10px 30px;
   border-radius: 0 0 10px 10px;
+  gap: 40px;
+}
+
+.sermon__info--cell {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
 }
 
 .sermon__info--speaker-image {
   height: 25px;
   width: 25px;
   border-radius: 50px;
-  margin-right: 10px;
   border: 0.5px solid lightgray;
 }
 

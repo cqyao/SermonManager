@@ -46,7 +46,6 @@
 }
 
 .card__meta {
-    font-size: 0.85rem;
     color: #666;
     margin-bottom: 8px;
     display: flex;
@@ -59,23 +58,28 @@
 
 }
 
-.card__series--label {
+.card__details--label {
     color: var(--normal-text-color);
 }
-.card__series--name {
+.card__details--name {
     color: var(--highlight-color);
 }
 
 .card__title {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 .card__details {
-    font-size: 0.85rem;
-    color: #444;
+    color: var(--normal-text-color);
     display: flex;
-    flex-direction: column;
-    gap: 4px;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.card__details--cell {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
 }
 
 @media (width > 430px) {

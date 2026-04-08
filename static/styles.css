@@ -9,7 +9,8 @@ body {
 }
 
 hr {
-  border: 0.5px solid #ccc;
+  border: 0.5px solid var(--border-color);
+  margin: 8px 0;
 }
 
 .mb1 {
@@ -28,8 +29,14 @@ hr {
   margin-top: 16px;
 }
 
+.vr--right {
+  border-right: 1px solid var(--border-color);
+  margin: 0 8px;
+}
+
 :root {
   --primary-color: #253238;
+  --border-color: #ccc;
   --font-primary:  'Oswald', sans-serif;
   --white-color: #fff;
   --highlight-color: #27C6DA;
@@ -53,8 +60,13 @@ hr {
   color: var(--primary-color);  
 }
 
+.tiny-text--normal {
+  font-size: 0.8rem;
+  font-weight: 300;
+}
+
 .tiny-text--light {
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   font-weight: 100;
 }
 

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block styles %}
-  <link rel="stylesheet" href="{{ url_for('static', filename='sermon.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='sermon.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -28,13 +28,20 @@
     {% else %}
     <div class="sermon__image--placeholder"></div>
     {% endif %}
-    <div class="sermon__info--speaker tiny-text--light">
-      <div class="sermon__info--speaker-image">
-        
+    <div class="sermon__info tiny-text--light">
+      <div class="sermon__info--cell">
+        <div class="fa-solid fa-user fa-xl"></div>
+        {% if sermon.speaker %}
+        <p>{{ sermon.speaker }}</p>
+        {% endif %}
       </div>
-      {% if sermon.speaker %}
-      <p>{{ sermon.speaker }}</p>
-      {% endif %}
+      <!-- <div class="sermon__info--cell">
+        <p>Worship</p>
+      </div> -->
+      <div class="sermon__info--cell">
+        <i class="fa-solid fa-book-bookmark fa-xl"></i>
+        <p>Genesis</p>
+      </div>
     </div>
   </div>
 

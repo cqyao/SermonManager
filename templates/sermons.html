@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block styles %}
-  <link rel="stylesheet" href="{{ url_for('static', filename='sermons.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='sermons.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -24,24 +24,33 @@
         <div class="card__body">
           <div class="card__meta">
             <span class="card__date tiny-text--light">{{ sermon.date }}</span>
+            <div class="vr--right"></div>
             {% if sermon.series_name %}
-            <span>|</span>
-            <span class="card__series--label tiny-text--light">Series: </span>
-            <span class="card__series--name tiny-text--light">{{ sermon.series_name }}</span>
+            <span class="card__details--label tiny-text--light">Series: </span>
+            <span class="card__details--name tiny-text--light">{{ sermon.series_name }}</span>
             {% endif %}
           </div>
-          <hr>
+          <hr class="mb1">
           <h2 class="card__title small-text--bold">{{ sermon.title }}</h2>
           <div class="card__details">
-            {% if sermon.speaker %}
-            <span>Speaker: <strong>{{ sermon.speaker }}</strong></span>
-            {% endif %}
-            {% if sermon.topic %}
-            <span>Topic: <strong>{{ sermon.topic }}</strong></span>
-            {% endif %}
-            {% if sermon.book %}
-            <span>Book: <strong>{{ sermon.book }}</strong></span>
-            {% endif %}
+            <div class="card__details--cell">
+              {% if sermon.speaker %}
+              <span class="card__details--label tiny-text--normal">Speaker: </span>
+              <span class="card__details--name tiny-text--normal">{{ sermon.speaker }}</span>
+              {% endif %}
+            </div>
+            <div class="card__details--cell">
+              {% if sermon.topic %}
+              <span class="card__details--label tiny-text--normal">Topic: </span>
+              <span class="card__details--name tiny-text--normal">{{ sermon.topic }}</span>
+              {% endif %}
+            </div>
+            <div class="card__details--cell">
+              {% if sermon.book %}
+              <span class="card__details--label tiny-text--normal">Book: </span>
+              <span class="card__details--name tiny-text--normal">{{ sermon.book }}</span>
+              {% endif %}
+            </div>
           </div>
         </div>
       </div>
