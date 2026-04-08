@@ -6,33 +6,33 @@
 
 {% block content %}
 <div class="page-header">
-  <h1 class="large-text--light">{{ sermon.title }}</h1>
+  <h1 class="large-text--light">{{ sermon['title'] }}</h1>
 </div>
 
 <div class="sermon-detail-container">
   <a href="/sermons" class="back-link mb2">← Back to Sermons</a>
   <hr class="mb2">
   <div class="sermon__title medium-text--bold mb1">
-    <span>{{ sermon.title }}</span>
+    <span>{{ sermon['title'] }}</span>
   </div>
   <div class="sermon-meta">
-    <span>{{ sermon.date }}</span>
-    {% if sermon.series_name %}
+    <span>{{ sermon['date'] }}</span>
+    {% if sermon['series_name'] %}
     <span>|</span>
-    <span>Series: <a href="/series/{{ sermon.series_id }}">{{ sermon.series_name }}</a></span>
+    <span>Series: <a href="/series/{{ sermon['series_id'] }}">{{ sermon['series_name'] }}</a></span>
     {% endif %}
   </div>
   <div class="sermon__image">
-    {% if sermon.image_url %}
-    <img src="{{ sermon.image_url }}" alt="{{ sermon.series_name }}">
+    {% if sermon['image_url'] %}
+    <img src="{{ sermon['image_url'] }}" alt="{{ sermon['series_name'] }}">
     {% else %}
     <div class="sermon__image--placeholder"></div>
     {% endif %}
     <div class="sermon__info tiny-text--light">
       <div class="sermon__info--cell">
         <div class="fa-solid fa-user fa-xl"></div>
-        {% if sermon.speaker %}
-        <p>{{ sermon.speaker }}</p>
+        {% if sermon['speaker'] %}
+        <p>{{ sermon['speaker'] }}</p>
         {% endif %}
       </div>
       <!-- <div class="sermon__info--cell">
@@ -40,7 +40,9 @@
       </div> -->
       <div class="sermon__info--cell">
         <i class="fa-solid fa-book-bookmark fa-xl"></i>
-        <p>Genesis</p>
+        {% if sermon['book'] %}
+        <p>{{ sermon['book'] }}</p>
+        {% endif %}
       </div>
     </div>
   </div>

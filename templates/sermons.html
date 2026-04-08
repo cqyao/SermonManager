@@ -12,43 +12,43 @@
 <div class="sermons-container">
   <div class="sermon-grid">
     {% for sermon in sermons %}
-    <a href="/sermon/{{ sermon.id }}" class="card__link">
+    <a href="/sermon/{{ sermon['id'] }}" class="card__link">
       <div class="card">
         <div class="card__image">
-          {% if sermon.image_url %}
-          <img src="{{ sermon.image_url }}" alt="{{ sermon.series_name }}">
+          {% if sermon['image_url'] %}
+          <img src="{{ sermon['image_url'] }}" alt="{{ sermon['series_name'] }}">
           {% else %}
           <div class="card__image--placeholder"></div>
           {% endif %}
         </div>
         <div class="card__body">
           <div class="card__meta">
-            <span class="card__date tiny-text--light">{{ sermon.date }}</span>
+            <span class="card__date tiny-text--light">{{ sermon['date'] }}</span>
             <div class="vr--right"></div>
-            {% if sermon.series_name %}
+            {% if sermon['series']['name'] %}
             <span class="card__details--label tiny-text--light">Series: </span>
-            <span class="card__details--name tiny-text--light">{{ sermon.series_name }}</span>
+            <span class="card__details--name tiny-text--light">{{ sermon['series']['name'] }}</span>
             {% endif %}
           </div>
           <hr class="mb1">
-          <h2 class="card__title small-text--bold">{{ sermon.title }}</h2>
+          <h2 class="card__title small-text--bold">{{ sermon['title'] }}</h2>
           <div class="card__details">
             <div class="card__details--cell">
-              {% if sermon.speaker %}
+              {% if sermon['speaker'] %}
               <span class="card__details--label tiny-text--normal">Speaker: </span>
-              <span class="card__details--name tiny-text--normal">{{ sermon.speaker }}</span>
+              <span class="card__details--name tiny-text--normal">{{ sermon['speaker'] }}</span>
               {% endif %}
             </div>
             <div class="card__details--cell">
-              {% if sermon.topic %}
+              {% if sermon['topic'] %}
               <span class="card__details--label tiny-text--normal">Topic: </span>
-              <span class="card__details--name tiny-text--normal">{{ sermon.topic }}</span>
+              <span class="card__details--name tiny-text--normal">{{ sermon['topic'] }}</span>
               {% endif %}
             </div>
             <div class="card__details--cell">
-              {% if sermon.book %}
+              {% if sermon['book'] %}
               <span class="card__details--label tiny-text--normal">Book: </span>
-              <span class="card__details--name tiny-text--normal">{{ sermon.book }}</span>
+              <span class="card__details--name tiny-text--normal">{{ sermon['book'] }}</span>
               {% endif %}
             </div>
           </div>

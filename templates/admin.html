@@ -83,11 +83,11 @@
             <tbody>
                 {% for sermon in sermons %}
                 <tr>
-                    <td><a href="/sermon/{{ sermon.id }}">{{ sermon.title }}</a></td>
-                    <td>{{ sermon.date }}</td>
-                    <td>{{ sermon.speaker or "—" }}</td>
-                    <td>{{ sermon.series_name or "—" }}</td>
-                    <td>{{ "✓" if sermon.audio_url else "✗" }}</td>
+                    <td><a href="/sermon/{{ sermon['id'] }}">{{ sermon['title'] }}</a></td>
+                    <td>{{ sermon['date'] }}</td>
+                    <td>{{ sermon['speaker'] or "—" }}</td>
+                    <td>{{ sermon['series']['name'] or "—" }}</td>
+                    <td>{{ "✓" if sermon['audio_url'] else "✗" }}</td>
                     <td>
                         <form method="POST" action="/admin/delete-sermon/{{ sermon.id }}">
                             <button type="submit" class="delete-btn">Delete</button>
