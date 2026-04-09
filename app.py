@@ -20,10 +20,24 @@ def index():
 # All sermons
 @app.route("/sermons")
 def sermons():
-    response = supabase.table("sermons") \
-        .select("*, series:series_id(name, image_url)") \
-        .order("date", desc=True) \
-        .execute()
+    date_filter = request.args.get("date")
+    speaker_filter = request.args.get("speaker")
+    book_filter = request.args.get("book")
+    
+    query = supabase.table("sermons") \
+        .select("*, series:series_id(name, image_url)")
+    
+    # Apply speaker filter
+    if speaker_filter:
+        query = query.eq("speaker", speaker_filter)
+        
+    # Apply book filter
+    if book_filter:
+        query = query.eq("book", book_filter)
+    
+    # Apply date sort
+    response = query.order("date", desc=date_filter != "DATE_ASC").execute()
+    
     sermons = response.data
     return render_template("sermons.html", sermons=sermons)
 
