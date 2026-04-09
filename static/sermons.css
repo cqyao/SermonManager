@@ -1,3 +1,9 @@
+.filter__container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
 .sermons-container {
     max-width: 1200px;
     margin: 40px auto;
@@ -84,6 +90,6 @@
 
 @media (width > 430px) {
   .sermon-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
