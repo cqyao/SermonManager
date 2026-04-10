@@ -199,3 +199,9 @@ button[type="submit"] {
   height: 200px;
 }
 
+@media (width > 430px) {
+  .form__row {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+

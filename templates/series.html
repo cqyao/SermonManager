@@ -6,7 +6,7 @@
 </div>
 
 <div class="sermons-container">
-    <div class="sermon-grid">
+    <!-- <div class="sermon-grid">
         {% for sermon in sermons %}
         <a href="/sermon/{{ sermon.id }}" class="sermon-card">
             <div class="card-body">
@@ -30,6 +30,9 @@
         {% else %}
         <p>No sermons in this series yet.</p>
         {% endfor %}
-    </div>
+    </div> -->
+    {% for sermon in sermons %}
+    <span>{{ sermon['title'] }}</span>
+    {% endfor %}
 </div>
 {% endblock %}
