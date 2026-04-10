@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block styles %}
-  <link rel="stylesheet" href="{{ url_for('static', filename='sermons.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='sermons.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -9,39 +9,87 @@
   <h1 class="large-text--light">Sermons</h1>
 </div>
 
+<!-- Filter by date (newest/oldest) and speaker -->
+<div class="filter__container">
+  <form class="form__row" id="sermon-filter">
+    <div class="form-group">
+      <select id="date-filter" name="date">
+        <option value="">Newest</option>
+        <option value="DATE_ASC">Oldest</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <select id="speaker-filter" name="speaker">
+        <option value="">All Speakers</option>
+        {% for s in sermons %}
+        <option value="{{ s['speaker'] }}">{{ s['speaker'] }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </form>
+  <form class="form__row" id="sermon-filter">
+    <div class="form-group">
+      <select id="book-filter" name="book">
+        <option value="">All Books</option>
+        {% for s in sermons %}
+        <option value="{{ s['book'] }}">{{ s['book'] }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <select id="series-filter" name="series">
+        <option value="">All Series</option>
+        {% for s in all_series %}
+        <option value="{{ s['name'] }}">{{ s['name'] }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </form>
+</div>
+
 <div class="sermons-container">
-  <div class="sermon-grid">
+  <div class="sermon-grid" id="sermon-grid">
     {% for sermon in sermons %}
-    <a href="/sermon/{{ sermon.id }}" class="card__link">
+    <a href="/sermon/{{ sermon['id'] }}" class="card__link" data-speaker="{{ sermon['speaker'] or '' }}"
+      data-date="{{ sermon['date'] }}" data-book="{{ sermon['book'] or ''}}">
       <div class="card">
         <div class="card__image">
-          {% if sermon.image_url %}
-          <img src="{{ sermon.image_url }}" alt="{{ sermon.series_name }}">
+          {% if sermon['image_url'] %}
+          <img src="{{ sermon['image_url'] }}" alt="{{ sermon['series_name'] }}">
           {% else %}
           <div class="card__image--placeholder"></div>
           {% endif %}
         </div>
         <div class="card__body">
           <div class="card__meta">
-            <span class="card__date tiny-text--light">{{ sermon.date }}</span>
-            {% if sermon.series_name %}
-            <span>|</span>
-            <span class="card__series--label tiny-text--light">Series: </span>
-            <span class="card__series--name tiny-text--light">{{ sermon.series_name }}</span>
+            <span class="card__date tiny-text--light">{{ sermon['date'] }}</span>
+            <div class="vr--right"></div>
+            {% if sermon['series']['name'] %}
+            <span class="card__details--label tiny-text--light">Series: </span>
+            <span class="card__details--name tiny-text--light">{{ sermon['series']['name'] }}</span>
             {% endif %}
           </div>
-          <hr>
-          <h2 class="card__title small-text--bold">{{ sermon.title }}</h2>
+          <hr class="mb1">
+          <h2 class="card__title small-text--bold">{{ sermon['title'] }}</h2>
           <div class="card__details">
-            {% if sermon.speaker %}
-            <span>Speaker: <strong>{{ sermon.speaker }}</strong></span>
-            {% endif %}
-            {% if sermon.topic %}
-            <span>Topic: <strong>{{ sermon.topic }}</strong></span>
-            {% endif %}
-            {% if sermon.book %}
-            <span>Book: <strong>{{ sermon.book }}</strong></span>
-            {% endif %}
+            <div class="card__details--cell">
+              {% if sermon['speaker'] %}
+              <span class="card__details--label tiny-text--normal">Speaker: </span>
+              <span class="card__details--name tiny-text--normal">{{ sermon['speaker'] }}</span>
+              {% endif %}
+            </div>
+            <div class="card__details--cell">
+              {% if sermon['topic'] %}
+              <span class="card__details--label tiny-text--normal">Topic: </span>
+              <span class="card__details--name tiny-text--normal">{{ sermon['topic'] }}</span>
+              {% endif %}
+            </div>
+            <div class="card__details--cell">
+              {% if sermon['book'] %}
+              <span class="card__details--label tiny-text--normal">Book: </span>
+              <span class="card__details--name tiny-text--normal">{{ sermon['book'] }}</span>
+              {% endif %}
+            </div>
           </div>
         </div>
       </div>
@@ -51,4 +99,61 @@
     {% endfor %}
   </div>
 </div>
+
+<script>
+  const speakerFilter = document.getElementById('speaker-filter');
+  const dateFilter = document.getElementById('date-filter');
+  const bookFilter = document.getElementById('book-filter');
+  const seriesFilter = document.getElementById('series-filter');
+  const sermonGrid = document.getElementById('sermon-grid');
+  const sermonCards = sermonGrid.querySelectorAll('.card__link');
+
+  function getQueryParams() {
+    const params = new URLSearchParams(window.location.search);
+    return params;
+  }
+
+  // Set filter values from query params on page load
+  function loadFiltersFromUrl() {
+    const params = getQueryParams();
+    const speaker = params.get('speaker');
+    const date = params.get('date');
+    const book = params.get('book');
+    const series = params.get('series');
+
+    if (speaker) speakerFilter.value = speaker;
+    if (date) dateFilter.value = date;
+    if (book) bookFilter.value = book;
+    if (series) seriesFilter.value = series;
+  }
+
+  function updateFilters() {
+    const params = new URLSearchParams();
+
+    if (speakerFilter.value) {
+      params.append('speaker', speakerFilter.value);
+    }
+    if (dateFilter.value) {
+      params.append('date', dateFilter.value);
+    }
+    if (bookFilter.value) {
+      params.append('book', bookFilter.value);
+    }
+    if (seriesFilter.value) {
+      params.append('series', seriesFilter.value);
+    }
+
+    // Navigate to /sermons with new query parameters
+    const queryString = params.toString();
+    window.location.href = `/sermons${queryString ? '?' + queryString : ''}`;
+  }
+
+  speakerFilter.addEventListener('change', updateFilters);
+  dateFilter.addEventListener('change', updateFilters);
+  bookFilter.addEventListener('change', updateFilters);
+  seriesFilter.addEventListener('change', updateFilters);
+
+  // Load filters on page load
+  loadFiltersFromUrl();
+</script>
 {% endblock %}
