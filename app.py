@@ -57,6 +57,7 @@ def sermons():
     all_series = series_response.data or []
 
     return render_template("sermons.html", sermons=sermons, all_series=all_series)
+    
 
 # Individual series page
 @app.route("/series/<int:series_id>")

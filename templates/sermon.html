@@ -17,9 +17,9 @@
   </div>
   <div class="sermon-meta">
     <span>{{ sermon['date'] }}</span>
-    {% if sermon['series_name'] %}
+    {% if sermon['series']['name'] %}
     <span>|</span>
-    <span>Series: <a href="/series/{{ sermon['series_id'] }}">{{ sermon['series_name'] }}</a></span>
+    <span>Series: <a href="/series/{{ sermon['series_id'] }}">{{ sermon['series']['name'] }}</a></span>
     {% endif %}
   </div>
   <div class="sermon__image">
