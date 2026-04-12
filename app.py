@@ -1,4 +1,5 @@
 from select import select
+import uuid
 
 from dotenv import load_dotenv
 load_dotenv()  # Load environment variables from .env file
@@ -52,11 +53,14 @@ def sermons():
     
     sermons = response.data
     
-    # Always render the full series list in the series dropdown
+    # Always render the full series, books, and speakers list in dropdowns
     series_response = supabase.table("series").select("name").order("name").execute()
     all_series = series_response.data or []
+    
+    speaker_response = supabase.table("unique_speakers").select("*").execute()
+    book_response = supabase.table("unique_books").select("*").execute()
 
-    return render_template("sermons.html", sermons=sermons, all_series=all_series)
+    return render_template("sermons.html", sermons=sermons, all_series=all_series, all_books=book_response, all_speakers=speaker_response)
     
 
 # Individual series page
@@ -109,14 +113,28 @@ def admin():
 @app.route("/admin/add-series", methods=["POST"])
 def add_series():
     supabase.table("series").insert({
-        "name": request.form["name"],
-        "image_url": request.form["image_url"]
+        "name": request.form["name"]
     }).execute()
     return redirect(url_for("admin"))
 
 # Add sermon
 @app.route("/admin/add-sermon", methods=["POST"])
 def add_sermon():
+    image_url = None
+    # Handle uploading images if provided
+    if "image" in request.files:
+        file = request.files["image"]
+        if file.filename != "":
+            extension = file.filename.rsplit(".", 1)[-1]
+            filename = f"{uuid.uuid4()}.{extension}"
+            
+            supabase.storage.from_("sermon_images").upload(
+                path=filename,
+                file=file.read(),
+                file_options={"content-type": file.content_type}
+            )
+            
+            image_url = supabase.storage.from_("sermon_images").get_public_url(filename)
     series_id = request.form["series_id"]
     supabase.table("sermons").insert({
         "title": request.form["title"],
@@ -125,7 +143,7 @@ def add_sermon():
         "topic": request.form["topic"],
         "book": request.form["book"],
         "audio_url": request.form["audio_url"],
-        "image_url": request.form["image_url"],
+        "image_url": image_url,
         "series_id": int(series_id) if series_id else None
     }).execute()
     return redirect(url_for("admin"))

@@ -53,6 +53,7 @@ hr {
   --white-color: #fff;
   --highlight-color: #27C6DA;
   --normal-text-color: #546E7A;
+  --warning-color: #cc3333;
 }
 
 .large-text--light {
@@ -117,6 +118,12 @@ hr {
     padding: 0 20px;
 }
 
+.form__container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+} 
+
 .admin-section {
     margin-bottom: 50px;
     padding-bottom: 40px;
@@ -133,7 +140,7 @@ hr {
 }
 
 .form-group {
-    margin: 0 5px 16px 5px;
+    margin: 0 5px 16px 0;
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -154,23 +161,21 @@ hr {
     color: var(--normal-text-color);
 }
 
-button[type="submit"] {
-    padding: 10px 24px;
-    background: #1a2a2a;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
+button {
+  padding: 8px 18px;
+  color: var(--white-color);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+
+}
+
+.add-btn {
+    background: var(--primary-color);
 }
 
 .delete-btn {
-    padding: 4px 12px;
-    background: #cc3333;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+    background: var(--warning-color);
 }
 
 .admin-table {

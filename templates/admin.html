@@ -3,68 +3,66 @@
 {% block content %}
 <div class="admin-container">
     <h1>Sermon Manager — Admin</h1>
+    <hr class="mb2 mt2">
 
-    <!-- Add Series -->
-    <section class="admin-section">
-        <h2>Add New Series</h2>
-        <form method="POST" action="/admin/add-series">
-            <div class="form-group">
-                <label>Series Name</label>
-                <input type="text" name="name" required>
-            </div>
-            <div class="form-group">
-                <label>Series Image URL</label>
-                <input type="text" name="image_url" placeholder="https://...">
-            </div>
-            <button type="submit">Add Series</button>
-        </form>
-    </section>
+    <div class="form__container">
+        <!-- Add Sermon -->
+        <section class="admin-section">
+            <h2>Add New Sermon</h2>
+            <form method="POST" action="/admin/add-sermon" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" name="date" required>
+                </div>
+                <div class="form-group">
+                    <label>Speaker</label>
+                    <input type="text" name="speaker">
+                </div>
+                <div class="form-group">
+                    <label>Topic</label>
+                    <input type="text" name="topic">
+                </div>
+                <div class="form-group">
+                    <label>Book</label>
+                    <input type="text" name="book">
+                </div>
+                <div class="form-group">
+                    <label>Audio URL (from Archive.org)</label>
+                    <input type="text" name="audio_url" placeholder="https://archive.org/download/...">
+                </div>
+                <div class="form-group">
+                    <label>Series</label>
+                    <select name="series_id">
+                        <option value="">-- No Series --</option>
+                        {% for s in series %}
+                        <option value="{{ s.id }}">{{ s.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Featured Image</label>
+                    <input type="file" name="image" accept="image/*">
+                </div>
+                <button type="submit" class="add-btn">Add Sermon</button>
+            </form>
+        </section>
 
-    <!-- Add Sermon -->
-    <section class="admin-section">
-        <h2>Add New Sermon</h2>
-        <form method="POST" action="/admin/add-sermon">
-            <div class="form-group">
-                <label>Title</label>
-                <input type="text" name="title" required>
-            </div>
-            <div class="form-group">
-                <label>Date</label>
-                <input type="date" name="date" required>
-            </div>
-            <div class="form-group">
-                <label>Speaker</label>
-                <input type="text" name="speaker">
-            </div>
-            <div class="form-group">
-                <label>Topic</label>
-                <input type="text" name="topic">
-            </div>
-            <div class="form-group">
-                <label>Book</label>
-                <input type="text" name="book">
-            </div>
-            <div class="form-group">
-                <label>Audio URL (from Archive.org)</label>
-                <input type="text" name="audio_url" placeholder="https://archive.org/download/...">
-            </div>
-            <div class="form-group">
-                <label>Series</label>
-                <select name="series_id">
-                    <option value="">-- No Series --</option>
-                    {% for s in series %}
-                    <option value="{{ s.id }}">{{ s.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="form-group">
-              <label>Sermon Image URL</label>
-              <input type="text" name="image_url" placeholder="https://...">
-            </div>
-            <button type="submit">Add Sermon</button>
-        </form>
-    </section>
-
+        <!-- Add Series -->
+        <section class="admin-section">
+            <h2>Add New Series</h2>
+            <form method="POST" action="/admin/add-series">
+                <div class="form-group">
+                    <label>Series Name</label>
+                    <input type="text" name="name" required>
+                </div>
+                <button type="submit" class="add-btn">Add Series</button>
+            </form>
+        </section>
+    </div>
     <!-- Existing Sermons -->
     <section class="admin-section">
         <h2>All Sermons</h2>
