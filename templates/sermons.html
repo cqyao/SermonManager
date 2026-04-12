@@ -21,7 +21,7 @@
     <div class="form-group">
       <select id="speaker-filter" name="speaker">
         <option value="">All Speakers</option>
-        {% for s in sermons %}
+        {% for s in all_speakers['data'] %}
         <option value="{{ s['speaker'] }}">{{ s['speaker'] }}</option>
         {% endfor %}
       </select>
@@ -29,7 +29,7 @@
     <div class="form-group">
       <select id="book-filter" name="book">
         <option value="">All Books</option>
-        {% for s in sermons %}
+        {% for s in all_books['data'] %}
         <option value="{{ s['book'] }}">{{ s['book'] }}</option>
         {% endfor %}
       </select>
