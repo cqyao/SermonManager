@@ -1,12 +1,15 @@
-~~_The current Sermon Manager is hosted on InfinityFree and Wordpress. It includes all the basic necessary features like password-protection, sermon uploads, filtering, etc. The end goal is to migrate it to a website that can be hosted and does not rely on an external hosting site._~~
-The current Sermon Manager is hosted on PythonAnywhere at https://cqyao.pythonanywhere.com/
-This is a basic website without any of the extra features like password-protection, filtering, etc.
+Sermon Manager allows for an easy but visually appealing way to upload sermons online. It includes many important features like compiling sermons into different series, categorising them by topic or book, and filtering by the speaker. 
 
-**Screenshots of the current WordPress website.**
-<img width="1678" height="898" alt="Image" src="https://github.com/user-attachments/assets/d027e024-b14f-449c-96d6-bf7a03bc685c" />
+Sermon Manager is built on Flask for the backend, HTML and Javascript for the frontend, and Supabase handling the database and storage. This makes for an easy, modifiable system with the possibility of upgrades in the future in mind.
 
-<img width="1678" height="898" alt="Image" src="https://github.com/user-attachments/assets/6bff5eb0-cdd9-4354-89ed-67080ff617bb" />
+Have a look at the website [here](https://cqyao.pythonanywhere.com/)
 
-<img width="1678" height="898" alt="Image" src="https://github.com/user-attachments/assets/71298954-0190-451f-ac04-21e074ae0bcd" />
+**Technologies Used**
+<img width="512" height="512" alt="image" src="https://github.com/user-attachments/assets/bd5057af-94b8-4722-87ea-a07cc4c9e59e" />
+<img width="512" height="512" alt="image" src="https://github.com/user-attachments/assets/95687007-e3c8-4842-a9d4-3d6fd25d9fde" />
+<img width="512" height="512" alt="image" src="https://github.com/user-attachments/assets/499efd07-53e2-49bf-87ec-30ea992c57bb" />
 
-<img width="1678" height="898" alt="Image" src="https://github.com/user-attachments/assets/37e1ba26-41dc-45e1-b997-805a984b29ad" />
+__There are three branches in the repo: dev, test, and main. When implementing a new feature, use the 'dev' branch until ready to be tested. Then, move to 'test'. Once, the feature has been fully tested, commit changes to 'main'.
+
+
+
