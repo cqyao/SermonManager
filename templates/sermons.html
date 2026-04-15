@@ -12,30 +12,30 @@
 <!-- Filter by date (newest/oldest) and speaker -->
 <div class="filter__container">
   <form class="form__row" id="sermon-filter">
-    <div class="form-group">
-      <select id="date-filter" name="date">
+    <div class="form__group">
+      <select class="form__select" id="date-filter" name="date">
         <option value="">Newest</option>
         <option value="DATE_ASC">Oldest</option>
       </select>
     </div>
-    <div class="form-group">
-      <select id="speaker-filter" name="speaker">
+    <div class="form__group">
+      <select class="form__select"  id="speaker-filter" name="speaker">
         <option value="">All Speakers</option>
         {% for s in all_speakers['data'] %}
         <option value="{{ s['speaker'] }}">{{ s['speaker'] }}</option>
         {% endfor %}
       </select>
     </div>
-    <div class="form-group">
-      <select id="book-filter" name="book">
+    <div class="form__group">
+      <select class="form__select"  id="book-filter" name="book">
         <option value="">All Books</option>
         {% for s in all_books['data'] %}
         <option value="{{ s['book'] }}">{{ s['book'] }}</option>
         {% endfor %}
       </select>
     </div>
-    <div class="form-group">
-      <select id="series-filter" name="series">
+    <div class="form__group">
+      <select class="form__select"  id="series-filter" name="series">
         <option value="">All Series</option>
         {% for s in all_series %}
         <option value="{{ s['name'] }}">{{ s['name'] }}</option>

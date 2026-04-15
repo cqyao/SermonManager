@@ -1,100 +1,108 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="admin-container">
+<div class="admin">
     <h1>Sermon Manager — Admin</h1>
     <hr class="mb2 mt2">
 
-    <div class="form__container">
+    <div class="form">
         <!-- Add Sermon -->
-        <section class="admin-section">
+        <section class="admin__section">
             <h2>Add New Sermon</h2>
             <form method="POST" action="/admin/add-sermon" enctype="multipart/form-data">
-                <div class="form-group">
+                <div class="form__group">
                     <label>Title</label>
-                    <input type="text" name="title" required>
+                    <input class="form__input" type="text" name="title" required>
                 </div>
-                <div class="form-group">
+                <div class="form__group">
                     <label>Date</label>
-                    <input type="date" name="date" required>
+                    <input class="form__input" type="date" name="date" required>
                 </div>
-                <div class="form-group">
+                <div class="form__group">
                     <label>Speaker</label>
-                    <input type="text" name="speaker">
+                    <input class="form__input" type="text" name="speaker">
                 </div>
-                <div class="form-group">
+                <div class="form__group">
                     <label>Topic</label>
-                    <input type="text" name="topic">
+                    <input class="form__input" type="text" name="topic">
                 </div>
-                <div class="form-group">
+                <div class="form__group">
                     <label>Book</label>
-                    <input type="text" name="book">
+                    <input class="form__input" type="text" name="book">
                 </div>
-                <div class="form-group">
+                <div class="form__group">
                     <label>Audio URL (from Archive.org)</label>
-                    <input type="text" name="audio_url" placeholder="https://archive.org/download/...">
+                    <input class="form__input" type="text" name="audio_url"
+                        placeholder="https://archive.org/download/...">
                 </div>
-                <div class="form-group">
+                <div class="form__group">
                     <label>Series</label>
-                    <select name="series_id">
+                    <select class="form__select" name="series_id">
                         <option value="">-- No Series --</option>
                         {% for s in series %}
                         <option value="{{ s.id }}">{{ s.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
-                <div class="form-group">
+                <div class="form__group">
                     <label>Featured Image</label>
-                    <input type="file" name="image" accept="image/*">
+                    <input class="form__input" type="file" name="image" accept="image/*">
                 </div>
-                <button type="submit" class="add-btn">Add Sermon</button>
+                <button type="submit" class="button button--primary">Add Sermon</button>
             </form>
         </section>
 
         <!-- Add Series -->
-        <section class="admin-section">
+        <section class="admin__section">
             <h2>Add New Series</h2>
-            <form method="POST" action="/admin/add-series">
-                <div class="form-group">
+            <form method="POST" action="/admin/add-series" enctype="multipart/form-data">
+                <div class="form__group">
                     <label>Series Name</label>
-                    <input type="text" name="name" required>
+                    <input class="form__input" type="text" name="name" required>
                 </div>
-                <button type="submit" class="add-btn">Add Series</button>
+                <div class="form__group">
+                    <label>Series Image</label>
+                    <input class="form__input" type="file" name="image" accept="image/*">
+                </div>
+                <button type="submit" class="button button--primary">Add Series</button>
             </form>
         </section>
     </div>
     <!-- Existing Sermons -->
-    <section class="admin-section">
-        <h2>All Sermons</h2>
+    <section class="admin__section">
+        <h2 class="admin__section__title">All Sermons</h2>
         {% if sermons %}
-        <table class="admin-table">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Date</th>
-                    <th>Speaker</th>
-                    <th>Series</th>
-                    <th>Audio</th>
-                    <th>Delete</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for sermon in sermons %}
-                <tr>
-                    <td><a href="/sermon/{{ sermon['id'] }}">{{ sermon['title'] }}</a></td>
-                    <td>{{ sermon['date'] }}</td>
-                    <td>{{ sermon['speaker'] or "—" }}</td>
-                    <td>{{ sermon['series']['name'] or "—" }}</td>
-                    <td>{{ "✓" if sermon['audio_url'] else "✗" }}</td>
-                    <td>
-                        <form method="POST" action="/admin/delete-sermon/{{ sermon.id }}">
-                            <button type="submit" class="delete-btn">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="admin__table__container">
+            <table class="admin__table">
+                <thead>
+                    <tr>
+                        <th class="admin__table__header">Title</th>
+                        <th class="admin__table__header">Date</th>
+                        <th class="admin__table__header">Speaker</th>
+                        <th class="admin__table__header">Series</th>
+                        <th class="admin__table__header">Audio</th>
+                        <th class="admin__table__header">Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sermon in sermons %}
+                    <tr>
+                        <td class="admin__table__cell"><a href="/sermon/{{ sermon['id'] }}">{{ sermon['title'] }}</a>
+                        </td>
+                        <td class="admin__table__cell">{{ sermon['date'] }}</td>
+                        <td class="admin__table__cell">{{ sermon['speaker'] or "—" }}</td>
+                        <td class="admin__table__cell">{{ sermon['series']['name'] or "—" }}</td>
+                        <td class="admin__table__cell">{{ "✓" if sermon['audio_url'] else "✗" }}</td>
+                        <td class="admin__table__cell">
+                            <form method="POST" action="/admin/delete-sermon/{{ sermon.id }}">
+                                <button type="submit" class="button button--danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
         {% else %}
         <p>No sermons yet.</p>
         {% endif %}
