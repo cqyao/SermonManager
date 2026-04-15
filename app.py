@@ -18,7 +18,18 @@ app = Flask(__name__)
 # Home page
 @app.route("/")
 def index():
-    return render_template("index.html")
+    sermons_response = supabase.table("sermons") \
+        .select("*, series:series_id(name)") \
+        .order("date", desc=True) \
+        .execute()
+    sermons = sermons_response.data
+
+    series_response = supabase.table("series") \
+        .select("*") \
+        .execute()
+    series = series_response.data
+
+    return render_template("index.html", sermons=sermons, series=series)
 
 # All sermons
 @app.route("/sermons")
@@ -112,9 +123,26 @@ def admin():
 # Add series
 @app.route("/admin/add-series", methods=["POST"])
 def add_series():
+    image_url = None
+    # Handle uploading image if provided
+    if "image" in request.files:
+        file = request.files["image"]
+        if file.filename != "":
+            extension = file.filename.rsplit(".", 1)[-1]
+            filename = f"{uuid.uuid4()}.{extension}"
+            
+            supabase.storage.from_("series_images").upload(
+                path=filename,
+                file=file.read(),
+                file_options={"content-type": file.content_type}
+            )
+            image_url = supabase.storage.from_("series_images").get_public_url(filename)
+            
     supabase.table("series").insert({
-        "name": request.form["name"]
+        "name": request.form["name"],
+        "image_url": image_url
     }).execute()
+    
     return redirect(url_for("admin"))
 
 # Add sermon

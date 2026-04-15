@@ -2,37 +2,9 @@
 
 {% block content %}
 <div class="page-header">
-    <h1>{{ series.name }}</h1>
+    <h1 class="large-text--light">{{ series.name }}</h1>
 </div>
 
-<div class="sermons-container">
-    <!-- <div class="sermon-grid">
-        {% for sermon in sermons %}
-        <a href="/sermon/{{ sermon.id }}" class="sermon-card">
-            <div class="card-body">
-                <div class="card-meta">
-                    <span class="card-date">{{ sermon.date }}</span>
-                </div>
-                <h2 class="card-title">{{ sermon.title }}</h2>
-                <div class="card-details">
-                    {% if sermon.speaker %}
-                    <span>Speaker: <strong>{{ sermon.speaker }}</strong></span>
-                    {% endif %}
-                    {% if sermon.topic %}
-                    <span>Topic: <strong>{{ sermon.topic }}</strong></span>
-                    {% endif %}
-                    {% if sermon.book %}
-                    <span>Book: <strong>{{ sermon.book }}</strong></span>
-                    {% endif %}
-                </div>
-            </div>
-        </a>
-        {% else %}
-        <p>No sermons in this series yet.</p>
-        {% endfor %}
-    </div> -->
-    {% for sermon in sermons %}
-    <span>{{ sermon['title'] }}</span>
-    {% endfor %}
+
 </div>
 {% endblock %}
