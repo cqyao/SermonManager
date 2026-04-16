@@ -30,6 +30,7 @@ hr {
 .mb2 { margin-bottom: 16px; }
 .mt1 { margin-top: 8px; }
 .mt2 { margin-top: 16px; }
+.mt3 { margin-top: 32px; }
 .vr--right {
   border-right: 1px solid var(--border-color);
   margin: 0 8px;
@@ -51,14 +52,23 @@ hr {
 }
 
 /* Typography utility classes */
-.large-text--light { font-size: var(--txt-lg); font-weight: 100; }
+.large-text--light { font-size: var(--txt-lg); font-weight: 300; }
 .medium-text--normal { font-size: var(--txt-md); font-weight: 400; color: var(--primary-color); }
 .medium-text--bold { font-size: var(--txt-md); font-weight: 700; color: var(--primary-color); }
+.medium-text--light { font-size: var(--txt-md); font-weight: 100; color: var(--primary-color); }
 .small-text--bold { font-size: var(--txt-sm); font-weight: 700; color: var(--primary-color); }
 .small-text--normal { font-size: var(--txt-sm); font-weight: 300; }
+.small-text--light { font-size: var(--txt-sm); font-weight: 100; color: var(--primary-color); }
 .tiny-text--normal { font-size: var(--txt-xs); font-weight: 300; }
-.tiny-text--light { font-size: var(--txt-xs); font-weight: 100; }
+.tiny-text--light { font-size: var(--txt-xs); font-weight: 100; color: var(--primary-color); }
 .tiny-text--bold { font-size: var(--txt-xs); font-weight: 600; }
+
+/* COLUMN MODIFIERS */
+.col2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
 
 /* NAVIGATION BLOCK */
 .navigation {
@@ -76,7 +86,6 @@ hr {
 .navigation__link {
   color: var(--primary-color);
   text-decoration: none;
-  font-size: 1.2rem;
 }
 
 /* HEADER BLOCK */
@@ -110,19 +119,17 @@ hr {
 }
 
 .card__image {
+  border-radius: 8px; /* Retains rounded corners in case image is smaller than card. */
   max-width: 100%;
 }
 
-.card--small {
-  border-radius: 4px;
-  border: none;
-  box-shadow: none;
-  max-width: 200px;
+.card__body {
+    padding: 16px;
 }
 
-.card--xl {
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.card__cell {
+  display: flex;
+  flex-direction: column;
 }
 
 /* CAROUSEL BLOCK */

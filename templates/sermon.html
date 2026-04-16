@@ -16,7 +16,7 @@
     <span>{{ sermon['title'] }}</span>
   </div>
   <div class="sermon-meta">
-    <span>{{ sermon['date'] }}</span>
+    <span>{{ sermon['date']|format_date }}</span>
     {% if sermon['series']['name'] %}
     <span>|</span>
     <span>Series: <a href="/series/{{ sermon['series_id'] }}">{{ sermon['series']['name'] }}</a></span>
