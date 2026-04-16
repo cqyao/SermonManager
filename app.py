@@ -7,6 +7,7 @@ load_dotenv()  # Load environment variables from .env file
 from flask import Flask, render_template, request, redirect, url_for
 import os
 from supabase import create_client
+from datetime import datetime
 
 # Store these in a .env file, never hardcode them
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
@@ -14,6 +15,10 @@ SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 app = Flask(__name__)
+
+@app.template_filter("format_date")
+def fomrat_dat(value):
+    return datetime.strptime(value, "%Y-%m-%d").strftime("%B %d, %Y")
 
 # Home page
 @app.route("/")
@@ -140,6 +145,7 @@ def add_series():
             
     supabase.table("series").insert({
         "name": request.form["name"],
+        "series_description": request.form["description"],
         "image_url": image_url
     }).execute()
     

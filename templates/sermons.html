@@ -51,7 +51,7 @@
     <a href="/sermon/{{ sermon['id'] }}" class="card__link" data-speaker="{{ sermon['speaker'] or '' }}"
       data-date="{{ sermon['date'] }}" data-book="{{ sermon['book'] or ''}}">
       <div class="card">
-        <div class="card__image">
+        <div class="card__image card__image">
           {% if sermon['image_url'] %}
           <img src="{{ sermon['image_url'] }}" alt="{{ sermon['series_name'] }}">
           {% else %}
@@ -60,7 +60,7 @@
         </div>
         <div class="card__body">
           <div class="card__meta">
-            <span class="card__date tiny-text--light">{{ sermon['date'] }}</span>
+            <span class="card__date tiny-text--light">{{ sermon['date']|format_date }}</span>
             <div class="vr--right"></div>
             {% if sermon['series']['name'] %}
             <span class="card__details--label tiny-text--light">Series: </span>
