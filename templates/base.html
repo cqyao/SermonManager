@@ -14,9 +14,18 @@
 <body>
   <div>
     <nav class="navigation__wrapper">
-      <a class="navigation__link small-text--light" href="/">Home</a>
-      <a class="navigation__link small-text--light" href="/sermons">Sermons</a>
-      <a class="navigation__link small-text--light" href="/admin">Admin</a>
+      <a class="navigation__link text-s font-light" href="/">Home</a>
+      <div class="navigation__cell--dropdown">
+        <a class="navigation__link text-s font-light">Resources</a>
+        <div class="navigation__dropdown">
+          <a class="navigation__link text-s font-normal" href="/sermons">Sermons</a>
+          <a class="navigation__link text-s font-normal" href="/sermons">Series</a>
+        </div>
+      </div>
+      <div class="navigation__cell--admin">
+        <i class="fa-regular fa-user fa-sm"></i>
+        <a class="navigation__link text-s font-light" href="/admin">Admin</a>
+      </div>
     </nav>
   </div>
 

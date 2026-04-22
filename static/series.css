@@ -27,6 +27,17 @@
   transform: translate(-50%, -50%);
 }
 
+.flex__container {
+  display: grid;
+}
+
+@media (width > 430px) {
+  .flex__container {
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+  }
+}
+
 .sermons__container {
   padding: 0 50px;
 }

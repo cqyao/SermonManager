@@ -6,7 +6,7 @@
 
 {% block content %}
 <div class="page-header">
-  <h1 class="large-text--light">Sermons</h1>
+  <h1 class="text-lg font-light">Sermons</h1>
 </div>
 
 <!-- Filter by date (newest/oldest) and speaker -->
@@ -60,32 +60,32 @@
         </div>
         <div class="card__body">
           <div class="card__meta">
-            <span class="card__date tiny-text--light">{{ sermon['date']|format_date }}</span>
+            <span class="card__date text-xs font-light">{{ sermon['date']|format_date }}</span>
             <div class="vr--right"></div>
             {% if sermon['series']['name'] %}
-            <span class="card__details--label tiny-text--light">Series: </span>
-            <span class="card__details--name tiny-text--light">{{ sermon['series']['name'] }}</span>
+            <span class="card__details--label text-xs font-light">Series: </span>
+            <span class="card__details--name text-xs font-light">{{ sermon['series']['name'] }}</span>
             {% endif %}
           </div>
           <hr class="mb1">
-          <h2 class="card__title small-text--bold">{{ sermon['title'] }}</h2>
+          <h2 class="card__title text-s font-bold">{{ sermon['title'] }}</h2>
           <div class="card__details">
             <div class="card__details--cell">
               {% if sermon['speaker'] %}
-              <span class="card__details--label tiny-text--normal">Speaker: </span>
-              <span class="card__details--name tiny-text--normal">{{ sermon['speaker'] }}</span>
+              <span class="card__details--label text-xs font-normal">Speaker: </span>
+              <span class="card__details--name text-xs font-normal">{{ sermon['speaker'] }}</span>
               {% endif %}
             </div>
             <div class="card__details--cell">
               {% if sermon['topic'] %}
-              <span class="card__details--label tiny-text--normal">Topic: </span>
-              <span class="card__details--name tiny-text--normal">{{ sermon['topic'] }}</span>
+              <span class="card__details--label text-xs font-normal">Topic: </span>
+              <span class="card__details--name text-xs font-normal">{{ sermon['topic'] }}</span>
               {% endif %}
             </div>
             <div class="card__details--cell">
               {% if sermon['book'] %}
-              <span class="card__details--label tiny-text--normal">Book: </span>
-              <span class="card__details--name tiny-text--normal">{{ sermon['book'] }}</span>
+              <span class="card__details--label text-xs font-normal">Book: </span>
+              <span class="card__details--name text-xs font-normal">{{ sermon['book'] }}</span>
               {% endif %}
             </div>
           </div>

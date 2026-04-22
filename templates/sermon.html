@@ -6,13 +6,13 @@
 
 {% block content %}
 <div class="page-header">
-  <h1 class="large-text--light">{{ sermon['title'] }}</h1>
+  <h1 class="text-lg font-light">{{ sermon['title'] }}</h1>
 </div>
 
 <div class="sermon-detail-container">
   <a href="/sermons" class="back-link mb2">← Back to Sermons</a>
   <hr class="mb2">
-  <div class="sermon__title medium-text--bold mb1">
+  <div class="sermon__title text-md font-bold mb1">
     <span>{{ sermon['title'] }}</span>
   </div>
   <div class="sermon-meta">
@@ -28,7 +28,7 @@
     {% else %}
     <div class="sermon__image--placeholder"></div>
     {% endif %}
-    <div class="sermon__info tiny-text--light">
+    <div class="sermon__info text-xs font-light">
       <div class="sermon__info--cell">
         <div class="fa-solid fa-user fa-xl"></div>
         {% if sermon['speaker'] %}

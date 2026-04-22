@@ -7,28 +7,36 @@
 {% block content %}
 <div class="featured-header">
     <img src="{{ series['image_url'] }}" class="featured__image">
-    <div class="featured__text large-text--light">{{ series['name'] }}</div>
+    <div class="featured__text text-lg font-light">{{ series['name'] }}</div>
 </div>
 <div class="sermons__container mt2">
-    <h1 class="small-text--bold mb1">Description</h1>
-    <p class="tiny-text--light mb2">{{ series['series_description'] }}</p>
-    <h1 class="tiny-text--bold mb1">In This Series</h1>
-    {% for sermon in sermons %}
-    <a href="/sermon/{{ sermon['id'] }}" class="card__link">
-        <div class="card mb2">
-            <div class="card__body col2">
-                <div class="card__cell">
-                    <img src="{{ sermon['image_url'] }}" class="card__image card__image">
-                </div>
-                <div class="card__cell">
-                    <h1 class="tiny-text--bold">{{ sermon['title'] }}</h1>
-                    <h1 class="tiny-text--light mb1"> {{sermon['date']|format_date }}</h1>
-                    <i class="fa-regular fa-circle-play fa-xl mt2"></i>
-                </div>
-            </div>
+    <div class="flex__container">
+        <div class="metadata__container">
+            <h1 class="text-s font-bold mb1">Description</h1>
+            <p class="text-xs font-light mb2">{{ series['series_description'] }}</p>
+            
         </div>
-    </a>
-    {% endfor %}
+        <div class="card__container">
+            <h1 class="text-xs font-bold mb1">In This Series</h1>
+            {% for sermon in sermons %}
+            <a href="/sermon/{{ sermon['id'] }}" class="card__link">
+                <div class="card mb2">
+                    <div class="card__body grid-2-cols">
+                        <div class="card__cell">
+                            <img src="{{ sermon['image_url'] }}" class="card__image card__image">
+                        </div>
+                        <div class="card__cell">
+                            <h1 class="text-xs font-bold">{{ sermon['title'] }}</h1>
+                            <h1 class="text-xs font-light mb1"> {{sermon['date']|format_date }}</h1>
+                            <i class="fa-regular fa-circle-play fa-xl mt2"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
 </div>
 
 
