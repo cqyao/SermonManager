@@ -18,8 +18,11 @@
       <div class="navigation__cell--dropdown">
         <a class="navigation__link text-s font-light">Resources</a>
         <div class="navigation__dropdown">
-          <a class="navigation__link text-s font-normal" href="/sermons">Sermons</a>
-          <a class="navigation__link text-s font-normal" href="/sermons">Series</a>
+          <a class="navigation__link text-s font-light" href="/sermons">• All Sermons</a>
+          <a class="text-s font-normal">Ongoing Series</a>
+          {% for s in series %}
+          <a class="navigation__link text-s font-light" href="/series/{{ s['id'] }}">• {{ s['name'] }}</a>
+          {% endfor %}
         </div>
       </div>
       <div class="navigation__cell--admin">
@@ -39,6 +42,8 @@
       <p class="tiny-text--normal">&copy; 2026 Sermon Manager. All rights reserved.</p>
     </div>
   </footer>
+
+  <script src="{{ url_for('static', filename='carousel.js') }}"></script>
 </body>
 
 </html>

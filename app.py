@@ -9,12 +9,65 @@ import os
 from supabase import create_client
 from datetime import datetime
 
+# Password protection for selected routes
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required
+from werkzeug.security import check_password_hash, generate_password_hash
+import bcrypt
+
 # Store these in a .env file, never hardcode them
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY", "dev-key-change-in-production")
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
+
+# Simple user model (in production, use a database)
+class User(UserMixin):
+    def __init__(self, id, username):
+        self.id = id
+        self.username = username
+
+# Hard-coded admin credentials (replace with database lookup in production)
+ADMIN_USERNAME = "admin"
+ADMIN_PASSWORD = bcrypt.hashpw(b"password", bcrypt.gensalt()).decode('utf-8')
+
+@login_manager.user_loader
+def load_user(user_id):
+    if user_id == "1":
+        return User("1", ADMIN_USERNAME)
+    return None
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        
+        if username == ADMIN_USERNAME and bcrypt.checkpw(password.encode('utf-8'), ADMIN_PASSWORD.encode('utf-8')):
+            user = User("1", ADMIN_USERNAME)
+            login_user(user)
+            return redirect(url_for("admin"))
+        else:
+            return render_template("login.html", error="Invalid credentials")
+    
+    return render_template("login.html")
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("index"))
+
+@app.context_processor
+def inject_series():
+    """Make series available on all templates"""
+    series_response = supabase.table("series").select("*").order("name").execute()
+    return dict(series=series_response.data or [])
 
 @app.template_filter("format_date")
 def fomrat_dat(value):
@@ -29,12 +82,7 @@ def index():
         .execute()
     sermons = sermons_response.data
 
-    series_response = supabase.table("series") \
-        .select("*") \
-        .execute()
-    series = series_response.data
-
-    return render_template("index.html", sermons=sermons, series=series)
+    return render_template("index.html", sermons=sermons)
 
 # All sermons
 @app.route("/sermons")
@@ -87,7 +135,7 @@ def series(series_id):
         .eq("id", series_id) \
         .single() \
         .execute()
-    series = series_response.data
+    current_series = series_response.data
 
     sermons_response = supabase.table("sermons") \
         .select("*") \
@@ -96,7 +144,7 @@ def series(series_id):
         .execute()
     sermons = sermons_response.data
 
-    return render_template("series.html", series=series, sermons=sermons)
+    return render_template("series.html", current_series=current_series, sermons=sermons)
 
 # Individual sermon page
 @app.route("/sermon/<int:sermon_id>")
@@ -111,6 +159,7 @@ def sermon(sermon_id):
 
 # Admin page
 @app.route("/admin")
+@login_required
 def admin():
     sermons_response = supabase.table("sermons") \
         .select("*, series:series_id(name)") \

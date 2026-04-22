@@ -6,14 +6,14 @@
 
 {% block content %}
 <div class="featured-header">
-    <img src="{{ series['image_url'] }}" class="featured__image">
-    <div class="featured__text text-lg font-light">{{ series['name'] }}</div>
+    <img src="{{ current_series['image_url'] }}" class="featured__image">
+    <div class="featured__text text-lg font-light">{{ current_series['name'] }}</div>
 </div>
 <div class="sermons__container mt2">
     <div class="flex__container">
         <div class="metadata__container">
             <h1 class="text-s font-bold mb1">Description</h1>
-            <p class="text-xs font-light mb2">{{ series['series_description'] }}</p>
+            <p class="text-xs font-light mb2">{{ current_series['series_description'] }}</p>
             
         </div>
         <div class="card__container">
