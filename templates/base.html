@@ -25,10 +25,22 @@
           {% endfor %}
         </div>
       </div>
+      {% if current_user.is_authenticated %}
       <div class="navigation__cell--admin">
         <i class="fa-regular fa-user fa-sm"></i>
         <a class="navigation__link text-s font-light" href="/admin">Admin</a>
+        <div class="hr"></div>
+        <i class="fa-solid fa-arrow-right-from-bracket fa-sm"></i>
+        <a class="navigation__link text-s font-light" href="/logout">Logout</a>
       </div>
+      
+      {% endif %}
+      {% if not current_user.is_authenticated %}
+      <div class="navigation__cell--admin">
+        <i class="fa-regular fa-user fa-sm"></i>
+        <a class="navigation__link text-s font-light" href="/login">Login</a>
+      </div>
+      {% endif %}
     </nav>
   </div>
 
