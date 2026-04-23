@@ -26,18 +26,18 @@
     {% if sermon['image_url'] %}
     <img src="{{ sermon['image_url'] }}" alt="{{ sermon['series_name'] }}">
     {% else %}
-    <div class="sermon__image--placeholder"></div>
+    <img src="{{ sermon['series']['image_url'] }}">
     {% endif %}
     <div class="sermon__info text-xs font-light">
       <div class="sermon__info--cell">
-        <div class="fa-solid fa-user fa-xl"></div>
         {% if sermon['speaker'] %}
+        <div class="fa-solid fa-user fa-xl"></div>
         <p>{{ sermon['speaker'] }}</p>
         {% endif %}
       </div>
       <div class="sermon__info--cell">
-        <i class="fa-solid fa-book-bookmark fa-xl"></i>
         {% if sermon['book'] %}
+        <i class="fa-solid fa-book-bookmark fa-xl"></i>
         <p>{{ sermon['book'] }}</p>
         {% endif %}
       </div>

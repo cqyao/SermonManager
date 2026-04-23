@@ -7,6 +7,7 @@
 
 html, body {
   min-height: 100%;
+  scrollbar-gutter: stable;
 }
 
 body {
@@ -154,6 +155,7 @@ li {
   z-index: 1;
   padding: 10px;
   border-radius: 8px;
+  white-space: nowrap;
 }
 
 .navigation__dropdown a {
@@ -163,7 +165,7 @@ li {
 }
 
 .navigation__dropdown a:not(:first-child) {
-  margin-top: 10px;
+  margin-top: 5px;
 }
 
 /* Show the dropdown menu on hover */
@@ -202,24 +204,68 @@ li {
 }
 
 /* CAROUSEL BLOCK */
+.carousel__container {
+  position: relative;
+}
+
 .carousel__wrapper {
-  padding: 0 20px;
+  display: flex;
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
-.carousel__wrapper--title {
-  padding: 0 20px;
+.carousel__link {
+  scroll-snap-align: center;
+  flex: 0 0 100vw;
 }
 
-.carousel__slider {
-  justify-content: center;
+.carousel__image {
+  width: 100vw;
+  height: 800px;
+  display: block;
+  object-fit: cover;
+  object-position: center 70%;
+}
+
+/* CAROUSEL CONTROLS */
+.carousel__control {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 70px;
+  height: 70px;
+  background-color: transparent;
+  color: white;
+  display: flex;
   align-items: center;
-  align-content: center;
-  padding: 0 20px;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: opacity 0.3s ease, background-color 0.3s ease;
+  border-radius: 90px;
+  opacity: 1;
 }
 
-.carousel__slider__image {
-  max-width: 100%;
+.carousel__control:hover {
+  background-color: rgba(0, 0, 0, 0.5);
 }
+
+.carousel__control.left {
+  left: 10px;
+}
+
+.carousel__control.right {
+  right: 10px;
+}
+
 
 /* ADMIN BLOCK */
 .admin {

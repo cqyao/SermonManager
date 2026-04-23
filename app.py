@@ -1,20 +1,85 @@
+#IMPORTS
 from select import select
 import uuid
 
 from dotenv import load_dotenv
-load_dotenv()  # Load environment variables from .env file
+
 
 from flask import Flask, render_template, request, redirect, url_for
 import os
 from supabase import create_client
 from datetime import datetime
 
-# Store these in a .env file, never hardcode them
+# Password protection for selected routes
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
+import bcrypt
+
+#LOAD ENVIRONMENT VARIABLES FROM .ENV FILE
+load_dotenv()  
+
+#CREATE FLASK APP
+app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY")
+
+#SUPABASE CLIENT
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-app = Flask(__name__)
+#FLASK LOGIN SETUP
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
+
+#FLASK USER SETUP
+class User(UserMixin):
+    def __init__(self, id):
+        self.id = id
+        
+@login_manager.user_loader
+def load_user(user_id):
+    if user_id == "1":
+        return User("1")
+    return None
+
+
+#ROUTES
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        password = request.form.get("password")
+        stored_hash = os.environ.get("PASSWORD").strip()
+        
+        try:
+            # bcrypt.checkpw expects bytes for both password and hash
+            result = bcrypt.checkpw(password.encode('utf-8'), stored_hash.encode('utf-8'))
+            
+            if result:
+                user = User("1")
+                login_user(user)
+                return redirect(url_for("admin"))
+            else:
+                return render_template("login.html", error="Invalid credentials")
+        except Exception as e:
+            print(f"Login error: {type(e).__name__}: {e}")
+            import traceback
+            traceback.print_exc()
+            return render_template("login.html", error="Authentication error")
+    
+    return render_template("login.html")
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("index"))
+
+@app.context_processor
+def inject_series():
+    """Make series available on all templates"""
+    series_response = supabase.table("series").select("*").order("name").execute()
+    return dict(series=series_response.data or [])
 
 @app.template_filter("format_date")
 def fomrat_dat(value):
@@ -29,12 +94,7 @@ def index():
         .execute()
     sermons = sermons_response.data
 
-    series_response = supabase.table("series") \
-        .select("*") \
-        .execute()
-    series = series_response.data
-
-    return render_template("index.html", sermons=sermons, series=series)
+    return render_template("index.html", sermons=sermons)
 
 # All sermons
 @app.route("/sermons")
@@ -87,7 +147,7 @@ def series(series_id):
         .eq("id", series_id) \
         .single() \
         .execute()
-    series = series_response.data
+    current_series = series_response.data
 
     sermons_response = supabase.table("sermons") \
         .select("*") \
@@ -96,7 +156,7 @@ def series(series_id):
         .execute()
     sermons = sermons_response.data
 
-    return render_template("series.html", series=series, sermons=sermons)
+    return render_template("series.html", current_series=current_series, sermons=sermons)
 
 # Individual sermon page
 @app.route("/sermon/<int:sermon_id>")
@@ -111,6 +171,7 @@ def sermon(sermon_id):
 
 # Admin page
 @app.route("/admin")
+@login_required
 def admin():
     sermons_response = supabase.table("sermons") \
         .select("*, series:series_id(name)") \
