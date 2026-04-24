@@ -1,5 +1,5 @@
 .filter__container {
-    max-width: 500px;
+    max-width: 430px;
     margin: 40px auto;
     padding: 0 20px;
 }
@@ -16,25 +16,6 @@
     gap: 24px;
 }
 
-.card__link {
-  text-decoration: none;
-  color: inherit;
-  display: block;
-}
-
-.card {
-    text-decoration: none;
-    background-color: var(--white-color);
-    color: inherit;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  
-}
-
 .card__image img {
     width: 100%;
     height: 200px;
@@ -48,10 +29,6 @@
     background: #ccc;
 }
 
-.card__body {
-    padding: 16px;
-}
-
 .card__meta {
     color: #666;
     margin-bottom: 8px;
@@ -60,14 +37,15 @@
 }
 
 .card__date {
-  font-style: italic;
-  color: var(--normal-text-color);
+    font-style: italic;
+    color: var(--normal-text-color);
 
 }
 
 .card__details--label {
     color: var(--normal-text-color);
 }
+
 .card__details--name {
     color: var(--highlight-color);
 }
@@ -84,13 +62,30 @@
 }
 
 .card__details--cell {
-  display: flex;
-  flex-direction: row;
-  gap: 4px;
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
 }
 
 @media (width > 430px) {
-  .sermon-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+    .sermon-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .filter__container {
+        max-width: 900px;
+    }
+
+}
+
+@media (width >=1440px) {
+    .sermon-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .card__details {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 3px;
+    }
 }

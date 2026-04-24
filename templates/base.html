@@ -12,11 +12,58 @@
 </head>
 
 <body>
-  <div class="navigation-bar">
-    <nav>
-      <a href="/">Home</a>
-      <a href="/sermons">Sermons</a>
-      <a href="/admin">Admin</a>
+  <div>
+    <nav class="navigation__wrapper">
+      <a class="navigation__link text-s font-light" href="/">Home</a>
+      <div class="navigation__cell--dropdown">
+        <a class="navigation__link text-s font-light">Resources</a>
+        <div class="navigation__dropdown">
+          <a class="navigation__link text-s font-light" href="/sermons">• All Sermons</a>
+          <a class="text-s font-normal">Ongoing Series</a>
+          {% for s in series %}
+          <a class="navigation__link text-s font-light" href="/series/{{ s['id'] }}">• {{ s['name'] }}</a>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- SIDE NAVIGATION FOR MOBILE -->
+      <div class="navigation__cell--menu" onClick="toggleMenu()">
+        <i class="fa-solid fa-bars"></i>
+      </div>
+      <div id="sideNav" class="side__nav" style="width: 0px">
+        <i class="fa-solid fa-xmark fa-lg" style="color: white" onClick="toggleMenu()"></i>
+        <div class="navigation__cell--admin mt2">
+          <a class="navigation__link--side_nav text-s font-light mb2" href="/admin">
+            <i class="fa-regular fa-user fa-sm"></i>
+            Admin
+          </a>
+          <div class="hr"></div>
+          <a class="navigation__link--side_nav text-s font-light mb2" href="/logout">
+            <i class="fa-solid fa-arrow-right-from-bracket fa-sm"></i>
+            Logout
+          </a>
+        </div>
+      </div>
+      <!-- FOR DESKTOP -->
+      {% if current_user.is_authenticated %}
+      <div class="navigation__cell--admin desktop">
+        <a class="navigation__link text-s font-light" href="/admin">
+          <i class="fa-regular fa-user fa-sm"></i>
+          Admin
+        </a>
+        <div class="hr"></div>
+        <a class="navigation__link text-s font-light" href="/logout">
+          <i class="fa-solid fa-arrow-right-from-bracket fa-sm"></i>
+          Logout
+        </a>
+      </div>
+      {% endif %}
+      {% if not current_user.is_authenticated %}
+      <div class="navigation__cell--admin desktop">
+        <i class="fa-regular fa-user fa-sm"></i>
+        <a class="navigation__link text-s font-light" href="/login">Login</a>
+      </div>
+      {% endif %}
     </nav>
   </div>
 
@@ -30,6 +77,9 @@
       <p class="tiny-text--normal">&copy; 2026 Sermon Manager. All rights reserved.</p>
     </div>
   </footer>
+
+  <script src="{{ url_for('static', filename='carousel.js') }}"></script>
+  <script src="{{ url_for('static', filename='menu.js') }}"></script>
 </body>
 
 </html>

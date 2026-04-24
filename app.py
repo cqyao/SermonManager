@@ -1,23 +1,100 @@
+#IMPORTS
 from select import select
+import uuid
 
 from dotenv import load_dotenv
-load_dotenv()  # Load environment variables from .env file
+
 
 from flask import Flask, render_template, request, redirect, url_for
 import os
 from supabase import create_client
+from datetime import datetime
 
-# Store these in a .env file, never hardcode them
+# Password protection for selected routes
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
+import bcrypt
+
+#LOAD ENVIRONMENT VARIABLES FROM .ENV FILE
+load_dotenv()  
+
+#CREATE FLASK APP
+app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY")
+
+#SUPABASE CLIENT
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-app = Flask(__name__)
+#FLASK LOGIN SETUP
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
+
+#FLASK USER SETUP
+class User(UserMixin):
+    def __init__(self, id):
+        self.id = id
+        
+@login_manager.user_loader
+def load_user(user_id):
+    if user_id == "1":
+        return User("1")
+    return None
+
+
+#ROUTES
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        password = request.form.get("password")
+        stored_hash = os.environ.get("PASSWORD").strip()
+        
+        try:
+            # bcrypt.checkpw expects bytes for both password and hash
+            result = bcrypt.checkpw(password.encode('utf-8'), stored_hash.encode('utf-8'))
+            
+            if result:
+                user = User("1")
+                login_user(user)
+                return redirect(url_for("admin"))
+            else:
+                return render_template("login.html", error="Invalid credentials")
+        except Exception as e:
+            print(f"Login error: {type(e).__name__}: {e}")
+            import traceback
+            traceback.print_exc()
+            return render_template("login.html", error="Authentication error")
+    
+    return render_template("login.html")
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("index"))
+
+@app.context_processor
+def inject_series():
+    """Make series available on all templates"""
+    series_response = supabase.table("series").select("*").order("name").execute()
+    return dict(series=series_response.data or [])
+
+@app.template_filter("format_date")
+def fomrat_dat(value):
+    return datetime.strptime(value, "%Y-%m-%d").strftime("%B %d, %Y")
 
 # Home page
 @app.route("/")
 def index():
-    return render_template("index.html")
+    sermons_response = supabase.table("sermons") \
+        .select("*, series:series_id(name)") \
+        .order("date", desc=True) \
+        .execute()
+    sermons = sermons_response.data
+
+    return render_template("index.html", sermons=sermons)
 
 # All sermons
 @app.route("/sermons")
@@ -52,11 +129,15 @@ def sermons():
     
     sermons = response.data
     
-    # Always render the full series list in the series dropdown
+    # Always render the full series, books, and speakers list in dropdowns
     series_response = supabase.table("series").select("name").order("name").execute()
     all_series = series_response.data or []
+    
+    speaker_response = supabase.table("unique_speakers").select("*").execute()
+    book_response = supabase.table("unique_books").select("*").execute()
 
-    return render_template("sermons.html", sermons=sermons, all_series=all_series)
+    return render_template("sermons.html", sermons=sermons, all_series=all_series, all_books=book_response, all_speakers=speaker_response)
+    
 
 # Individual series page
 @app.route("/series/<int:series_id>")
@@ -66,7 +147,7 @@ def series(series_id):
         .eq("id", series_id) \
         .single() \
         .execute()
-    series = series_response.data
+    current_series = series_response.data
 
     sermons_response = supabase.table("sermons") \
         .select("*") \
@@ -75,7 +156,7 @@ def series(series_id):
         .execute()
     sermons = sermons_response.data
 
-    return render_template("series.html", series=series, sermons=sermons)
+    return render_template("series.html", current_series=current_series, sermons=sermons)
 
 # Individual sermon page
 @app.route("/sermon/<int:sermon_id>")
@@ -90,6 +171,7 @@ def sermon(sermon_id):
 
 # Admin page
 @app.route("/admin")
+@login_required
 def admin():
     sermons_response = supabase.table("sermons") \
         .select("*, series:series_id(name)") \
@@ -107,15 +189,47 @@ def admin():
 # Add series
 @app.route("/admin/add-series", methods=["POST"])
 def add_series():
+    image_url = None
+    # Handle uploading image if provided
+    if "image" in request.files:
+        file = request.files["image"]
+        if file.filename != "":
+            extension = file.filename.rsplit(".", 1)[-1]
+            filename = f"{uuid.uuid4()}.{extension}"
+            
+            supabase.storage.from_("series_images").upload(
+                path=filename,
+                file=file.read(),
+                file_options={"content-type": file.content_type}
+            )
+            image_url = supabase.storage.from_("series_images").get_public_url(filename)
+            
     supabase.table("series").insert({
         "name": request.form["name"],
-        "image_url": request.form["image_url"]
+        "series_description": request.form["description"],
+        "image_url": image_url
     }).execute()
+    
     return redirect(url_for("admin"))
 
 # Add sermon
 @app.route("/admin/add-sermon", methods=["POST"])
 def add_sermon():
+    image_url = None
+    # Handle uploading images if provided
+    if "image" in request.files:
+        file = request.files["image"]
+        if file.filename != "":
+            extension = file.filename.rsplit(".", 1)[-1]
+            filename = f"{uuid.uuid4()}.{extension}"
+            
+            supabase.storage.from_("sermon_images").upload(
+                path=filename,
+                file=file.read(),
+                file_options={"content-type": file.content_type}
+            )
+            
+            image_url = supabase.storage.from_("sermon_images").get_public_url(filename)
     series_id = request.form["series_id"]
     supabase.table("sermons").insert({
         "title": request.form["title"],
@@ -124,7 +238,7 @@ def add_sermon():
         "topic": request.form["topic"],
         "book": request.form["book"],
         "audio_url": request.form["audio_url"],
-        "image_url": request.form["image_url"],
+        "image_url": image_url,
         "series_id": int(series_id) if series_id else None
     }).execute()
     return redirect(url_for("admin"))

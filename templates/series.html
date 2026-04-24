@@ -1,35 +1,44 @@
 {% extends "base.html" %}
 
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='series.css') }}">
+{% endblock %}
+
 {% block content %}
-<div class="page-header">
-    <h1>{{ series.name }}</h1>
+<div class="featured-header">
+    <img src="{{ current_series['image_url'] }}" class="featured__image">
+    <div class="featured__text text-lg font-light">{{ current_series['name'] }}</div>
+</div>
+<div class="sermons__container mt2">
+    <div class="flex__container">
+        <div class="metadata__container">
+            <h1 class="text-s font-bold mb1">Description</h1>
+            <p class="text-xs font-light mb2">{{ current_series['series_description'] }}</p>
+            
+        </div>
+        <div class="card__container">
+            <h1 class="text-xs font-bold mb1">In This Series</h1>
+            {% for sermon in sermons %}
+            <a href="/sermon/{{ sermon['id'] }}" class="card__link">
+                <div class="card mb2">
+                    <div class="card__body grid-2-cols">
+                        <div class="card__cell">
+                            <img src="{{ sermon['image_url'] }}" class="card__image card__image">
+                        </div>
+                        <div class="card__cell">
+                            <h1 class="text-xs font-bold">{{ sermon['title'] }}</h1>
+                            <h1 class="text-xs font-light mb1"> {{sermon['date']|format_date }}</h1>
+                            <i class="fa-regular fa-circle-play fa-xl mt2"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
 </div>
 
-<div class="sermons-container">
-    <div class="sermon-grid">
-        {% for sermon in sermons %}
-        <a href="/sermon/{{ sermon.id }}" class="sermon-card">
-            <div class="card-body">
-                <div class="card-meta">
-                    <span class="card-date">{{ sermon.date }}</span>
-                </div>
-                <h2 class="card-title">{{ sermon.title }}</h2>
-                <div class="card-details">
-                    {% if sermon.speaker %}
-                    <span>Speaker: <strong>{{ sermon.speaker }}</strong></span>
-                    {% endif %}
-                    {% if sermon.topic %}
-                    <span>Topic: <strong>{{ sermon.topic }}</strong></span>
-                    {% endif %}
-                    {% if sermon.book %}
-                    <span>Book: <strong>{{ sermon.book }}</strong></span>
-                    {% endif %}
-                </div>
-            </div>
-        </a>
-        {% else %}
-        <p>No sermons in this series yet.</p>
-        {% endfor %}
-    </div>
+
 </div>
 {% endblock %}

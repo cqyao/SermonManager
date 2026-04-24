@@ -1,0 +1,49 @@
+.featured__image {
+  height: 300px;
+  width: 100%;
+  object-fit: cover;
+  filter: brightness(40%);
+  -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+}
+
+@media (width > 430px) {
+  .featured__image {
+    height: 400px;
+  }
+}
+
+.featured-header {
+  position: relative;
+  text-align: center;
+  color: white;
+  text-align: center;
+}
+
+.featured__text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.flex__container {
+  display: grid;
+}
+
+@media (width > 430px) {
+  .flex__container {
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+  }
+}
+
+.sermons__container {
+  padding: 0 50px;
+}
+
+@media (width > 430px) {
+  .sermons__container {
+    padding: 0 200px;
+  }
+}

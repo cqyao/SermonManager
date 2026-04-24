@@ -1,5 +1,24 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Coming soon</h1>
+<div class="page__container--main">
+  <div class="carousel__container">
+    <div class="carousel__wrapper" id="mainCarousel">
+      <!-- Slides-->
+      {% for s in series %}
+      <a href="/series/{{ s['id'] }}" class="carousel__link">
+        <img src="{{ s['image_url'] }}" class="carousel__image">
+      </a>
+      {% endfor %}
+    </div>
+
+    <!-- Arrow controls (outside scrolling container) -->
+    <a class="left carousel__control">
+      <i class="fa-solid fa-circle-arrow-left fa-2xl"></i>
+    </a>
+    <a class="right carousel__control">
+      <i class="fa-solid fa-circle-arrow-right fa-2xl"></i>
+    </a>
+  </div>
+</div>
 {% endblock %}
