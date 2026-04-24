@@ -30,7 +30,9 @@
       <select class="form__select"  id="book-filter" name="book">
         <option value="">All Books</option>
         {% for s in all_books['data'] %}
+        {% if s['book'] != "" %}
         <option value="{{ s['book'] }}">{{ s['book'] }}</option>
+        {% endif %}
         {% endfor %}
       </select>
     </div>
