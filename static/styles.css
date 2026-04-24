@@ -107,20 +107,21 @@ li {
 }
 
 .navigation__cell--admin {
-  display: flex;
-  margin-left: auto;
+  
   justify-content: center;
   align-items: center;
   gap: 5px;
 }
 
-.navigation__cell--dropdown {
+.navigation__cell--admin.desktop {
+  display: none;
+  margin-left: auto;
+}
+
+.navigation__cell--menu {
   justify-content: center;
   align-items: center;
-  gap: 5px;
-  position: relative;
-  display: inline-block;
-  height: 100%;
+  margin-left: auto;
 }
 
 .navigation__link {
@@ -128,20 +129,49 @@ li {
   text-decoration: none;
 }
 
+.navigation__link--side_nav {
+  color: var(--white-color);
+  text-decoration: none;
+}
+
 .navigation__link:hover {
   text-decoration: underline;
 }
 
-/* HEADER BLOCK */
-.page-header {
-  background: var(--primary-color);
-  color: white;
-  padding: clamp(10px, 30px, 60px) 20px;
-  text-align: center;
+/* @media FOR NON-DESKTOP */
+@media (width > 430px) {
+  .navigation__cell--menu {
+    display: none;
+  }
+
+  .navigation__cell--admin.desktop {
+    display: flex;
+  }
 }
 
-.page-header__title {
-  padding: 0 20px;
+
+/* SIDE NAVIGATION MENU */
+.side__nav {
+  height: 100%; /* 100% Full-height */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  right: 0;
+  background-color: var(--primary-color); /* Black*/
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 20px; /* Place content 60px from the top */
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+  border-radius: 25px 0 0 25px;
+  /* Prevent text from wrapping when menu transitions to hidden */
+  white-space: nowrap;
+  overflow: visible;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.side__nav i {
+  margin-left: 20px;
 }
 
 /* DROPDOWN BLOCK */
@@ -158,6 +188,15 @@ li {
   white-space: nowrap;
 }
 
+.navigation__cell--dropdown {
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  position: relative;
+  display: inline-block;
+  height: 100%;
+}
+
 .navigation__dropdown a {
   display: block;
   background-color: var(--primary-color);
@@ -170,6 +209,19 @@ li {
 
 /* Show the dropdown menu on hover */
 .navigation__cell--dropdown:hover .navigation__dropdown {display: block;}
+
+/* HEADER BLOCK */
+.page-header {
+  background: var(--primary-color);
+  color: white;
+  padding: clamp(10px, 30px, 60px) 20px;
+  text-align: center;
+}
+
+.page-header__title {
+  padding: 0 20px;
+}
+
 
 /* CARD BLOCK */
 .card {
@@ -229,7 +281,7 @@ li {
 
 .carousel__image {
   width: 100vw;
-  height: 800px;
+  height: 100%;
   display: block;
   object-fit: cover;
   object-position: center 70%;
@@ -264,6 +316,12 @@ li {
 
 .carousel__control.right {
   right: 10px;
+}
+
+@media (width <= 430px) {
+  .carousel__control {
+    display: none;
+  }
 }
 
 
