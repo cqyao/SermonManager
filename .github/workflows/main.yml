@@ -3,7 +3,8 @@ name: Deploy to PythonAnywhere
 on:
   push:
     branches:
-      - [test, dev]  # or whichever branch should trigger the deploy
+      -test
+      -dev # or whichever branch should trigger the deploy
 
 jobs:
   deploy:
