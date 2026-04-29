@@ -132,6 +132,7 @@ li {
 .navigation__link--side_nav {
   color: var(--white-color);
   text-decoration: none;
+  margin-left: 20px;
 }
 
 .navigation__link:hover {
@@ -170,7 +171,7 @@ li {
   flex-direction: column;
 }
 
-.side__nav i {
+.side__nav .fa-xmark {
   margin-left: 20px;
 }
 
