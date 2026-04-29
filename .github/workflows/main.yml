@@ -12,4 +12,4 @@ jobs:
         with:
           host: 'www.pythonanywhere.com'
           username: {{ secrets.USERNAME }}
-          api_token: {{ secrets.PYTHONANYWHERE_API }}
+          api_token: {{ secrets.PYTHONANYWHERE_API_TOKEN }}
