@@ -1,3 +1,5 @@
+<!-- Test workflow 2-->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -32,6 +34,7 @@
       </div>
       <div id="sideNav" class="side__nav" style="width: 0px">
         <i class="fa-solid fa-xmark fa-lg" style="color: white" onClick="toggleMenu()"></i>
+        {% if current_user.is_authenticated %}
         <div class="navigation__cell--admin mt2">
           <a class="navigation__link--side_nav text-s font-light mb2" href="/admin">
             <i class="fa-regular fa-user fa-sm"></i>
@@ -43,6 +46,13 @@
             Logout
           </a>
         </div>
+        {% endif %}
+        {% if not current_user.is_authenticated %}
+        <div class="navigation__cell--admin mt2">
+          <a class="navigation__link--side_nav text-s font-light mb2" href="/login">
+            Login</a>
+        </div>
+        {% endif %}
       </div>
       <!-- FOR DESKTOP -->
       {% if current_user.is_authenticated %}
