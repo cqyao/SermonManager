@@ -1,6 +1,9 @@
 name: Deploy pythonanywhere webapp
 on: 
   pull_request:
+    branches:
+      - test
+      - dev
 jobs:
   deploy:
     runs-on: ubuntu-latest
