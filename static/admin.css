@@ -1,0 +1,38 @@
+/* ADMIN BLOCK */
+.admin {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.admin__section {
+  margin-bottom: 50px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid #ddd;
+}
+
+.admin__section__title {
+  margin-bottom: 20px;
+}
+
+.admin__table__container {
+  overflow-x: auto;
+}
+
+.admin__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.admin__table__header,
+.admin__table__cell {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.admin__table__header {
+  background: #f5f5f5;
+  font-weight: bold;
+}
