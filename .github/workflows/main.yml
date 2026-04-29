@@ -3,7 +3,7 @@ name: Deploy to PythonAnywhere
 on:
   pull_request:
     branches:
-      -test # or whichever branch should trigger the deploy
+      -test
 
 jobs:
   deploy:
