@@ -48,10 +48,25 @@
                         {% endfor %}
                     </select>
                 </div>
-                <div class="form__group">
-                    <label>Featured Image</label>
-                    <input class="form__input" type="file" name="image" accept="image/*">
+                <!-- Pop-up window for image selection -->
+                <button type="button" class="button button--secondary mb2" onClick="togglePopup()">Select Featured
+                    Image</button>
+                <div class="popup__container" id="popup" style="display: none">
+                    <!-- Popup contents -->
+                    <div class="form__group">
+                        <label>Featured Image</label>
+                        <input class="form__input" type="file" name="image" accept="image/*">
+                        <input type="hidden" name="selected_image_url" id="selectedImageUrl" value="">
+                        <h1 class="text-xs font-light">Or choose existing image</h1>
+                        <div class="thumbnail__container" id="thumbnailContainer">
+                            {% for image in images %}
+                            <img src="{{ image }}" class="thumbnail" data-image-url="{{ image }}">
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <button type="submit" class="button button--danger" onClick="togglePopup()">Cancel</button>
                 </div>
+                <div/>
                 <button type="submit" class="button button--primary">Add Sermon</button>
             </form>
         </section>
@@ -126,45 +141,39 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const thumbnails = document.querySelectorAll('.thumbnail');
-    const selectedImageUrlField = document.getElementById('selectedImageUrl');
-    const fileInput = document.getElementById('seriesImageFile');
+    document.addEventListener('DOMContentLoaded', function () {
+        const thumbnails = document.querySelectorAll('.thumbnail');
+        const selectedImageUrlField = document.getElementById('selectedImageUrl');
+        const fileInput = document.getElementById('seriesImageFile');
 
-    // Handle thumbnail clicks
-    thumbnails.forEach(thumbnail => {
-        thumbnail.addEventListener('click', function() {
-            const imageUrl = this.getAttribute('data-image-url');
-            
-            // Set the hidden field with the selected image URL
-            selectedImageUrlField.value = imageUrl;
-            
-            // Clear file input so existing image takes priority
-            fileInput.value = '';
-            
-            // Visual feedback - add active class
-            thumbnails.forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
+        // Handle thumbnail clicks
+        thumbnails.forEach(thumbnail => {
+            thumbnail.addEventListener('click', function () {
+                const imageUrl = this.getAttribute('data-image-url');
+
+                // Set the hidden field with the selected image URL
+                selectedImageUrlField.value = imageUrl;
+
+                // Clear file input so existing image takes priority
+                fileInput.value = '';
+
+                // Visual feedback - add active class
+                thumbnails.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+
+            // Make thumbnails look clickable
+            thumbnail.style.cursor = 'pointer';
         });
-        
-        // Make thumbnails look clickable
-        thumbnail.style.cursor = 'pointer';
-    });
 
-    // Clear selection if user picks a new file
-    fileInput.addEventListener('change', function() {
-        if (this.value) {
-            selectedImageUrlField.value = '';
-            thumbnails.forEach(t => t.classList.remove('active'));
-        }
+        // Clear selection if user picks a new file
+        fileInput.addEventListener('change', function () {
+            if (this.value) {
+                selectedImageUrlField.value = '';
+                thumbnails.forEach(t => t.classList.remove('active'));
+            }
+        });
     });
-});
 </script>
-
-<style>
-.thumbnail.active {
-    border: 3px solid #2563eb;
-    border-radius: 4px;
-}
-</style>
+<script src="{{ url_for('static', filename='functions.js') }}"></script>
 {% endblock %}

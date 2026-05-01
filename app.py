@@ -228,8 +228,12 @@ def add_series():
 @app.route("/admin/add-sermon", methods=["POST"])
 def add_sermon():
     image_url = None
-    # Handle uploading images if provided
-    if "image" in request.files:
+        # First, check if user selected an existing image
+    selected_image_url = request.form.get("selected_image_url", "").strip()
+    if selected_image_url:
+        image_url = selected_image_url
+    # Otherwise, handle uploading a new image if provided
+    elif "image" in request.files:
         file = request.files["image"]
         if file.filename != "":
             extension = file.filename.rsplit(".", 1)[-1]
@@ -240,7 +244,6 @@ def add_sermon():
                 file=file.read(),
                 file_options={"content-type": file.content_type}
             )
-            
             image_url = supabase.storage.from_("images").get_public_url(filename)
     series_id = request.form["series_id"]
     supabase.table("sermons").insert({
