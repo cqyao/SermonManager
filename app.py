@@ -271,7 +271,7 @@ if __name__ == "__main__":
     app.run(debug=True)
     
 # FOR GITHUB CI/CD AUTOMATION
-@app.route('/update_server', methods=['POST'])
+@app.route("/update_server", methods=['POST'])
 def webhook():
     if request.method == 'POST':
         repo = git.Repo('./SermonManager')
