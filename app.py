@@ -15,6 +15,9 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 from werkzeug.security import generate_password_hash, check_password_hash
 import bcrypt
 
+# Github webhook automation
+import git
+
 #LOAD ENVIRONMENT VARIABLES FROM .ENV FILE
 load_dotenv()  
 
@@ -266,3 +269,15 @@ def delete_sermon(sermon_id):
 
 if __name__ == "__main__":
     app.run(debug=True)
+    
+# FOR GITHUB CI/CD AUTOMATION
+@app.route('/update_server', methods=['POST'])
+def webhook():
+    if request.method == 'POST':
+        repo = git.Repo('./SermonManager')
+        origin = repo.remotes.origin
+        
+        origin.pull()
+        return 'updated PythonAnywhere successfully', 200
+    else:
+        return 'Wrong event type', 400
