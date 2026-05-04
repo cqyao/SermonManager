@@ -15,6 +15,9 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 from werkzeug.security import generate_password_hash, check_password_hash
 import bcrypt
 
+# Github webhook automation
+import git
+
 #LOAD ENVIRONMENT VARIABLES FROM .ENV FILE
 load_dotenv()  
 
@@ -183,26 +186,38 @@ def admin():
         .select("*") \
         .execute()
     series = series_response.data
+    
+    images = []
+    image_metadata = supabase.storage.from_("images").list()
+    for filename in image_metadata: 
+        image_url = supabase.storage.from_("images").get_public_url(filename['name'])
+        images.append(image_url)
 
-    return render_template("admin.html", sermons=sermons, series=series)
+
+    return render_template("admin.html", sermons=sermons, series=series, images=images)
 
 # Add series
 @app.route("/admin/add-series", methods=["POST"])
 def add_series():
     image_url = None
-    # Handle uploading image if provided
-    if "image" in request.files:
+    
+    # First, check if user selected an existing image
+    selected_image_url = request.form.get("selected_image_url", "").strip()
+    if selected_image_url:
+        image_url = selected_image_url
+    # Otherwise, handle uploading a new image if provided
+    elif "image" in request.files:
         file = request.files["image"]
         if file.filename != "":
             extension = file.filename.rsplit(".", 1)[-1]
             filename = f"{uuid.uuid4()}.{extension}"
             
-            supabase.storage.from_("series_images").upload(
+            supabase.storage.from_("images").upload(
                 path=filename,
                 file=file.read(),
                 file_options={"content-type": file.content_type}
             )
-            image_url = supabase.storage.from_("series_images").get_public_url(filename)
+            image_url = supabase.storage.from_("images").get_public_url(filename)
             
     supabase.table("series").insert({
         "name": request.form["name"],
@@ -216,20 +231,23 @@ def add_series():
 @app.route("/admin/add-sermon", methods=["POST"])
 def add_sermon():
     image_url = None
-    # Handle uploading images if provided
-    if "image" in request.files:
+        # First, check if user selected an existing image
+    selected_image_url = request.form.get("selected_image_url", "").strip()
+    if selected_image_url:
+        image_url = selected_image_url
+    # Otherwise, handle uploading a new image if provided
+    elif "image" in request.files:
         file = request.files["image"]
         if file.filename != "":
             extension = file.filename.rsplit(".", 1)[-1]
             filename = f"{uuid.uuid4()}.{extension}"
             
-            supabase.storage.from_("sermon_images").upload(
+            supabase.storage.from_("images").upload(
                 path=filename,
                 file=file.read(),
                 file_options={"content-type": file.content_type}
             )
-            
-            image_url = supabase.storage.from_("sermon_images").get_public_url(filename)
+            image_url = supabase.storage.from_("images").get_public_url(filename)
     series_id = request.form["series_id"]
     supabase.table("sermons").insert({
         "title": request.form["title"],
@@ -251,3 +269,18 @@ def delete_sermon(sermon_id):
 
 if __name__ == "__main__":
     app.run(debug=True)
+    
+# FOR GITHUB CI/CD AUTOMATION
+@app.route('/update_server', methods=['POST'])
+def webhook():
+    if request.method == 'POST':
+        repo = git.Repo('./SermonManager')
+        origin = repo.remotes.origin
+        
+        origin.pull()
+        return 'updated PythonAnywhere successfully', 200
+    else:
+        return 'Wrong event type', 400
+    
+
+
