@@ -5,24 +5,23 @@
 {% endblock %}
 
 {% block content %}
-<div class="page__container--main">
-  <div class="carousel__container">
-    <div class="carousel__wrapper" id="mainCarousel">
-      <!-- Slides-->
+<div>
+  <div id="carousel" class="carousel slide" data-bs-ride="false">
+    <div class="carousel-inner">
       {% for s in series %}
-      <a href="/series/{{ s['id'] }}" class="carousel__link">
-        <img src="{{ s['image_url'] }}" class="carousel__image">
-      </a>
+        <div class="carousel-item {% if loop.first %}active{% endif %}">
+          <img class="d-block w-100" src="{{ s['image_url'] }}" alt="{{ s['id'] }} slide">
+        </div>
       {% endfor %}
     </div>
-
-    <!-- Arrow controls (outside scrolling container) -->
-    <a class="left carousel__control">
-      <i class="fa-solid fa-circle-arrow-left fa-2xl"></i>
-    </a>
-    <a class="right carousel__control">
-      <i class="fa-solid fa-circle-arrow-right fa-2xl"></i>
-    </a>
+    <button class="carousel-control-prev" href="carousel" type="button" data-bs-target="#carousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
   </div>
 </div>
 {% endblock %}
