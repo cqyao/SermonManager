@@ -85,7 +85,7 @@ def inject_series():
     return dict(series=series_response.data or [])
 
 @app.template_filter("format_date")
-def fomrat_dat(value):
+def format_date(value):
     return datetime.strptime(value, "%Y-%m-%d").strftime("%B %d, %Y")
 
 # Home page

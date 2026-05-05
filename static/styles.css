@@ -1,20 +1,34 @@
 :root {
   --primary-background: #EDEEE9; /* Use for majority of background elements and non-highlighted areas. */
   --secondary-background: #54645A; /* Use for highlighted areas or breaking up large background areas. */
-  --primary-text: #323232;
+  --bs-primary: #323232;
+  --bs-primary-rgb: 50, 50, 50;
+  --bs-secondary: #EDEEE9;
+  --bs-secondary-rgb: 237, 238, 233;
+  --font-primary: "Josefin Slab", serif;
+  --font-secondary: "Jost", sans-serif;
 }
 
 
 .navbar-logo {
-  font-family: "Josefin Slab", serif;
   color: var(--primary-text);
-}
-
-.nav-item {
-  font-family: "Jost", sans-serif;
-
 }
 
 .navbar {
   background-color: var(--primary-background);
+}
+
+.section { background-color: var(--secondary-background);}
+
+h1, h2, h3 {
+  font-family: var(--font-primary);
+}
+
+h4, h5, h6 {
+  font-family: var(--font-secondary);
+}
+
+a {
+  font-family: var(--font-secondary);
+  text-decoration: none;
 }
