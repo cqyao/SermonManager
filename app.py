@@ -48,6 +48,17 @@ def load_user(user_id):
 
 
 #ROUTES
+
+# Helper function to get all sermons in a series
+def get_sermons_by_series(series_id):
+    """Returns all sermons from a particular series, ordered by date (newest first)"""
+    response = supabase.table("sermons") \
+        .select("*") \
+        .eq("series_id", series_id) \
+        .order("date", desc=True) \
+        .execute()
+    return response.data or []
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -144,6 +155,7 @@ def sermons():
 
 # Individual series page
 @app.route("/series/<int:series_id>")
+@app.route("/sermon/")
 def series(series_id):
     series_response = supabase.table("series") \
         .select("*") \
@@ -170,7 +182,11 @@ def sermon(sermon_id):
         .single() \
         .execute()
     sermon = response.data
-    return render_template("sermon.html", sermon=sermon)
+    
+    # Get all sermons from the same series
+    sermons = get_sermons_by_series(sermon["series_id"])
+    
+    return render_template("sermon.html", sermon=sermon, sermons=sermons)
 
 # Admin page
 @app.route("/admin")

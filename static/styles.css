@@ -5,6 +5,8 @@
   --bs-primary-rgb: 50, 50, 50;
   --bs-secondary: #EDEEE9;
   --bs-secondary-rgb: 237, 238, 233;
+  --bs-info: #54645A;
+  --bs-info-rgb: 84, 100, 90;
   --font-primary: "Josefin Slab", serif;
   --font-secondary: "Jost", sans-serif;
 }
@@ -31,4 +33,8 @@ h4, h5, h6 {
 a {
   font-family: var(--font-secondary);
   text-decoration: none;
+}
+
+.shadow-top {
+  box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
 }

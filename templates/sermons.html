@@ -6,115 +6,115 @@
 
 {% block content %}
 <!-- MOST RECENT SERMON -->
-<a class="recent" href="/sermon/{{ sermons[0]['id'] }}">
-  <div class="position-relative p-4 bg-secondary">
+<a class="recent vh-100" href="/sermon/{{ sermons[0]['id'] }}">
+  <div class="position-relative p-4 bg-secondary text-center">
     <i class="fa-solid fa-circle-play fa-4x position-absolute top-50 start-50 translate-middle text-white"></i>
-    <img class="w-100 rounded-5 mt-3" src="{{ sermons[0]['image_url'] }}">
+    <img class="w-100 rounded-5 mt-3 " src="{{ sermons[0]['image_url'] }}">
   </div>
-  <div class="d-flex flex-column justify-content-center align-items-center bg-secondary px-5">
-    <h5 class="text-primary mt-4 mb-2 fw-light">Latest Sermon</h5>
+  <div class="d-flex flex-column justify-content-center align-items-center bg-secondary px-5 sticky-top z-n1">
+    <h5 class="text-primary mt-4 mb-3 fw-light">Latest Sermon</h5>
     <h1 class="text-primary mb-4 fw-bold display-1 text-center">{{ sermons[0]['title'] }}</h1>
     <h5 class="text-primary fw-light mb-5">{{ sermons[0]['speaker'] }} &#11835; {{ sermons[0]['date']|format_date }}
     </h5>
   </div>
 </a>
-<div class="p-4 section">
+<div class="p-4 section position-relative rounded-top-5 shadow-top">
   <h3 class="mb-0 fw-normal text-white">All Sermons</h3>
   <h6 class="fw-light text-white">Find all past sermons below</h6>
 </div>
-<!-- FILTER SECTION -->
-<div class="container">
-  <div class="row d-flex justify-content-center align-items-center mt-3">
-    <div class="col-6 col-md-4">
-      <select class="form-select col-6 mb-2" id="date-filter" name="date">
-        <option value="">Newest</option>
-        <option value="DATE_ASC">Oldest</option>
-      </select>
-    </div>
-    <div class="col-6 col-md-4">
-      <select class="form-select col-6 mb-2" id="speaker-filter" name="speaker">
-        <option value="">All Speakers</option>
-        {% for speaker in all_speakers['data'] %}
-        <option value="{{ speaker['speaker'] }}">{{ speaker['speaker'] }}</option>
-        {% endfor %}
-      </select>
+<div class="bg-white z-2">
+  <!-- FILTER SECTION -->
+  <div class="container bg-white">
+    <div class="row d-flex justify-content-center align-items-center pt-3">
+      <div class="col-6 col-md-4">
+        <select class="form-select col-6 mb-2" id="date-filter" name="date">
+          <option value="">Newest</option>
+          <option value="DATE_ASC">Oldest</option>
+        </select>
+      </div>
+      <div class="col-6 col-md-4">
+        <select class="form-select col-6 mb-2" id="speaker-filter" name="speaker">
+          <option value="">All Speakers</option>
+          {% for speaker in all_speakers['data'] %}
+          <option value="{{ speaker['speaker'] }}">{{ speaker['speaker'] }}</option>
+          {% endfor %}
+        </select>
+      </div>
     </div>
   </div>
-</div>
-<!-- ALL SERMONS -->
-<div class="container">
-  <div class="row m-xl-5">
-    {% for s in sermons %}
-      <a class="card col-6 col-md-4 border-0 pt-3 sermon-card" 
-         href="/sermon/{{ s['id'] }}"
-         data-speaker="{{ s['speaker'] }}"
-         data-date="{{ s['date'] }}">
-        <img class="rounded" src="{{ s['image_url'] }}">
+  <!-- ALL SERMONS -->
+  <div class="container bg-white">
+    <div class="row m-xl-5">
+      {% for sermon in sermons %}
+      <a class="card col-6 col-md-4 border-0 pt-3 sermon-card" href="/sermon/{{ sermon['id'] }}"
+        data-speaker="{{ sermon['speaker'] }}" data-date="{{ sermon['date'] }}">
+        <img class="rounded" src="{{ sermon['image_url'] }}">
         <div class="card-body pb-0">
-          <h6 class="card-title mb-0 fw-bold text-primary">{{ s['title'] }}</h6>
-          <p class="card-text small">{{ s['date']|format_date }}</p>
+          <h6 class="card-title mb-0 fw-bold text-primary">{{ sermon['title'] }}</h6>
+          <p class="card-text small">{{ sermon['date']|format_date }}</p>
         </div>
       </a>
-    {% endfor %}
+      {% endfor %}
+    </div>
   </div>
 </div>
 
 
 <script>
-function filterSermons() {
-  const dateFilter = document.getElementById('date-filter').value;
-  const speakerFilter = document.getElementById('speaker-filter').value;
-  const cards = document.querySelectorAll('.sermon-card');
-  
-  cards.forEach(card => {
-    const cardSpeaker = card.getAttribute('data-speaker');
-    let show = true;
-    
-    // Filter by speaker
-    if (speakerFilter && cardSpeaker !== speakerFilter) {
-      show = false;
-    }
-    
-    // Show or hide card
-    if (show) {
-      card.style.display = '';
+  function filterSermons() {
+    const dateFilter = document.getElementById('date-filter').value;
+    const speakerFilter = document.getElementById('speaker-filter').value;
+    const cards = document.querySelectorAll('.sermon-card');
+
+    cards.forEach(card => {
+      const cardSpeaker = card.getAttribute('data-speaker');
+      let show = true;
+
+      // Filter by speaker
+      if (speakerFilter && cardSpeaker !== speakerFilter) {
+        show = false;
+      }
+
+      // Show or hide card
+      if (show) {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    // Sort cards based on date filter
+    if (dateFilter === 'DATE_ASC') {
+      // Sort oldest first
+      const cardsArray = Array.from(cards).filter(card => card.style.display !== 'none');
+      cardsArray.sort((a, b) => {
+        const dateA = new Date(a.getAttribute('data-date'));
+        const dateB = new Date(b.getAttribute('data-date'));
+        return dateA - dateB;
+      });
+
+      const container = document.querySelector('.row.m-xl-5');
+      cardsArray.forEach(card => container.appendChild(card));
     } else {
-      card.style.display = 'none';
+      // Sort newest first (default)
+      const cardsArray = Array.from(cards).filter(card => card.style.display !== 'none');
+      cardsArray.sort((a, b) => {
+        const dateA = new Date(a.getAttribute('data-date'));
+        const dateB = new Date(b.getAttribute('data-date'));
+        return dateB - dateA;
+      });
+
+      const container = document.querySelector('.row.m-xl-5');
+      cardsArray.forEach(card => container.appendChild(card));
     }
-  });
-  
-  // Sort cards based on date filter
-  if (dateFilter === 'DATE_ASC') {
-    // Sort oldest first
-    const cardsArray = Array.from(cards).filter(card => card.style.display !== 'none');
-    cardsArray.sort((a, b) => {
-      const dateA = new Date(a.getAttribute('data-date'));
-      const dateB = new Date(b.getAttribute('data-date'));
-      return dateA - dateB;
-    });
-    
-    const container = document.querySelector('.row.m-xl-5');
-    cardsArray.forEach(card => container.appendChild(card));
-  } else {
-    // Sort newest first (default)
-    const cardsArray = Array.from(cards).filter(card => card.style.display !== 'none');
-    cardsArray.sort((a, b) => {
-      const dateA = new Date(a.getAttribute('data-date'));
-      const dateB = new Date(b.getAttribute('data-date'));
-      return dateB - dateA;
-    });
-    
-    const container = document.querySelector('.row.m-xl-5');
-    cardsArray.forEach(card => container.appendChild(card));
   }
-}
 
-// Add event listeners to filters
-document.getElementById('date-filter').addEventListener('change', filterSermons);
-document.getElementById('speaker-filter').addEventListener('change', filterSermons);
+  // Add event listeners to filters
+  document.getElementById('date-filter').addEventListener('change', filterSermons);
+  document.getElementById('speaker-filter').addEventListener('change', filterSermons);
 
-// Initial sort (newest first)
-filterSermons();
+  // Initial sort (newest first)
+  filterSermons();
 </script>
- 
+
 {% endblock %}

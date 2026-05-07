@@ -5,48 +5,35 @@
 {% endblock %}
 
 {% block content %}
-<div class="page-header">
-  <h1 class="text-lg font-light">{{ sermon['title'] }}</h1>
-</div>
 
-<div class="sermon-detail-container">
+<div class="container px-4">
   <a href="/sermons" class="back-link mb2">← Back to Sermons</a>
-  <hr class="mb2">
-  <div class="sermon__title text-md font-bold mb1">
-    <span>{{ sermon['title'] }}</span>
-  </div>
-  <div class="sermon-meta">
-    <span>{{ sermon['date']|format_date }}</span>
-    {% if sermon['series']['name'] %}
-    <span>|</span>
-    <span>Series: <a href="/series/{{ sermon['series_id'] }}">{{ sermon['series']['name'] }}</a></span>
-    {% endif %}
-  </div>
-  <div class="sermon__image">
+  <hr class="mb-4">
+  <!-- Card with speaker, book, and image -->
+  <div class="card border-0 bg-secondary">
     {% if sermon['image_url'] %}
-    <img src="{{ sermon['image_url'] }}" alt="{{ sermon['series_name'] }}">
-    {% else %}
-    <img src="{{ sermon['series']['image_url'] }}">
+    <img src="{{ sermon['image_url'] }}" class="rounded-top-5 rounded-end-0">
     {% endif %}
-    <div class="sermon__info text-xs font-light">
-      <div class="sermon__info--cell">
-        {% if sermon['speaker'] %}
-        <div class="fa-solid fa-user fa-xl"></div>
-        <p>{{ sermon['speaker'] }}</p>
-        {% endif %}
+    <div class="bg-info d-flex flex-row rounded-bottom-5 rounded-start-0 py-2 px-3">
+      <div class="d-flex flex-row align-items-center">
+        <i class="fa-user fa-solid fa-xs text-white me-2"></i>
+        <h6 class="text-white mb-0 fw-light me-3">{{ sermon['speaker'] }}</h6>
       </div>
-      <div class="sermon__info--cell">
-        {% if sermon['book'] %}
-        <i class="fa-solid fa-book-bookmark fa-xl"></i>
-        <p>{{ sermon['book'] }}</p>
-        {% endif %}
+      {% if sermon['book'] %}
+      <div class="d-flex flex-row align-items-center">
+        <i class="fa-book-bookmark fa-solid fa-xs text-white me-2"></i>
+        <h6 class="text-white mb-0 fw-light">{{ sermon['book'] }}</h6>
       </div>
+      {% endif %}
     </div>
   </div>
-
+  <div class="d-flex flex-column align-items-center justify-content-center mt-3">
+    <h2 class="fw-bold">{{ sermon['title'] }}</h2>
+    <h6 class="fw-light">{{ sermon['date']|format_date }}</h6>
+  </div>
+  <!-- Audio player -->
   {% if sermon.audio_url %}
-  <div class="audio-player">
-    <p class="mt2">LISTEN TO SERMON</p>
+  <div class="audio-player mb-3">
     <audio controls>
       <source src="{{ sermon.audio_url }}" type="audio/mpeg">
       Your browser does not support the audio element.
@@ -55,6 +42,27 @@
   {% else %}
   <p class="no-audio">No audio available for this sermon.</p>
   {% endif %}
+
+  <!-- "More from" section -->
+  <div class="d-flex flex-row mt-5">
+    <h6 class="fw-light me-1 text-muted">More from</h6><h6 class="fw-normal">{{ sermon['series']['name'] }}</h6>
+  </div>
+  <div>
+    {% for sermon in sermons %}
+      <a class="card d-flex flex-row border-0 mb-4 bg-transparent" 
+         href="/sermon/{{ sermon['id'] }}"
+         data-speaker="{{ sermon['speaker'] }}"
+         data-date="{{ sermon['date'] }}">
+        <div class="col-4">
+          <img class="rounded w-100" src="{{ sermon['image_url'] }}">
+        </div>
+        <div class="card-body col-8 pb-0">
+          <h6 class="card-title mb-0 fw-normal text-primary">{{ sermon['title'] }}</h6>
+          <p class="card-text fw-light small">{{ sermon['date']|format_date }}</p>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
 
 
 </div>
