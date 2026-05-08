@@ -212,6 +212,11 @@ def admin():
 
     return render_template("admin.html", sermons=sermons, series=series, images=images)
 
+@app.route("/add-sermon")
+def add_new_sermon():
+    
+    return render_template("add-sermon.html")
+
 # Add series
 @app.route("/admin/add-series", methods=["POST"])
 def add_series():
@@ -266,12 +271,12 @@ def add_sermon():
             image_url = supabase.storage.from_("images").get_public_url(filename)
     series_id = request.form["series_id"]
     supabase.table("sermons").insert({
-        "title": request.form["title"],
-        "date": request.form["date"],
-        "speaker": request.form["speaker"],
-        "topic": request.form["topic"],
-        "book": request.form["book"],
-        "audio_url": request.form["audio_url"],
+        "title": request.form["Title"],
+        "date": request.form["Date"],
+        "speaker": request.form["Speaker"],
+        "topic": request.form["Topic"],
+        "book": request.form["Book"],
+        "audio_url": request.form["AudioURL"],
         "image_url": image_url,
         "series_id": int(series_id) if series_id else None
     }).execute()

@@ -4,176 +4,47 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
 {% endblock %}
 
+{% block navbar %} {% endblock %}
+
 {% block content %}
-<div class="admin">
-    <h1>Sermon Manager — Admin</h1>
-    <hr class="mb2 mt2">
-
-    <div class="form">
-        <!-- Add Sermon -->
-        <section class="admin__section">
-            <h2>Add New Sermon</h2>
-            <form method="POST" action="/admin/add-sermon" enctype="multipart/form-data">
-                <div class="form__group">
-                    <label>Title</label>
-                    <input class="form__input" type="text" name="title" required>
-                </div>
-                <div class="form__group">
-                    <label>Date</label>
-                    <input class="form__input" type="date" name="date" required>
-                </div>
-                <div class="form__group">
-                    <label>Speaker</label>
-                    <input class="form__input" type="text" name="speaker">
-                </div>
-                <div class="form__group">
-                    <label>Topic</label>
-                    <input class="form__input" type="text" name="topic">
-                </div>
-                <div class="form__group">
-                    <label>Book</label>
-                    <input class="form__input" type="text" name="book">
-                </div>
-                <div class="form__group">
-                    <label>Audio URL (from Archive.org)</label>
-                    <input class="form__input" type="text" name="audio_url"
-                        placeholder="https://archive.org/download/...">
-                </div>
-                <div class="form__group">
-                    <label>Series</label>
-                    <select class="form__select" name="series_id">
-                        <option value="">-- No Series --</option>
-                        {% for s in series %}
-                        <option value="{{ s.id }}">{{ s.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <!-- Pop-up window for image selection -->
-                <button type="button" class="button button--secondary mb2" onClick="togglePopup()">Select Featured
-                    Image</button>
-                <div class="popup__container" id="popup" style="display: none">
-                    <!-- Popup contents -->
-                    <div class="form__group">
-                        <label>Featured Image</label>
-                        <input class="form__input" type="file" name="image" accept="image/*">
-                        <input type="hidden" name="selected_image_url" id="selectedImageUrl" value="">
-                        <h1 class="text-xs font-light">Or choose existing image</h1>
-                        <div class="thumbnail__container" id="thumbnailContainer">
-                            {% for image in images %}
-                            <img src="{{ image }}" class="thumbnail" data-image-url="{{ image }}">
-                            {% endfor %}
-                        </div>
-                    </div>
-                    <button type="submit" class="button button--danger" onClick="togglePopup()">Cancel</button>
-                </div>
-                <div/>
-                <button type="submit" class="button button--primary">Add Sermon</button>
-            </form>
-        </section>
-
-        <!-- Add Series -->
-        <section class="admin__section">
-            <h2>Add New Series</h2>
-            <form method="POST" action="/admin/add-series" enctype="multipart/form-data">
-                <div class="form__group">
-                    <label>Series Name</label>
-                    <input class="form__input" type="text" name="name" required>
-                </div>
-                <div class="form__group">
-                    <label>Description</label>
-                    <input class="form__input" type="text" name="description">
-                </div>
-                <!-- Add image section -->
-                <div class="form__group">
-                    <label>Series Image</label>
-                    <input class="form__input" type="file" name="image" accept="image/*" id="seriesImageFile">
-                    <input type="hidden" name="selected_image_url" id="selectedImageUrl" value="">
-                    <h1 class="text-xs font-light">Or choose existing image</h1>
-                    <div class="thumbnail__container" id="thumbnailContainer">
-                        {% for image in images %}
-                        <img src="{{ image }}" class="thumbnail" data-image-url="{{ image }}">
-                        {% endfor %}
-                    </div>
-                </div>
-                <button type="submit" class="button button--primary">Add Series</button>
-            </form>
-        </section>
+<div class="container-fluid">
+  <div class="row">
+    <!-- Side Menu -->
+    <div class="bg-info col-auto vh-100 p-0">
+      <div class="bg-dark py-4 px-3 text-white">
+        <h3>Sermon Manager</h3>
+        <h6>Admin</h6>
+      </div>
+      <div class="py-4 px-3">
+        <ul class="list-unstyled d-flex flex-column gap-2">
+          <li>
+            <i class="fa-solid fa-house fa-fw"></i>
+            Home
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fa-solid fa-book-bible fa-fw"></i>
+              Manage Sermons
+            </a>
+            <ul class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" href="/add-sermon"><i class="fa-solid fa-square-plus fa-fw"></i>
+                  Add New Sermon</a>
+              </li>
+              <li>
+                <a class="dropdown-item"><i class="fa-solid fa-mountain-sun fa-fw"></i>
+                  View all
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
     </div>
-    <!-- Existing Sermons -->
-    <section class="admin__section">
-        <h2 class="admin__section__title">All Sermons</h2>
-        {% if sermons %}
-        <div class="admin__table__container">
-            <table class="admin__table">
-                <thead>
-                    <tr>
-                        <th class="admin__table__header">Title</th>
-                        <th class="admin__table__header">Date</th>
-                        <th class="admin__table__header">Speaker</th>
-                        <th class="admin__table__header">Series</th>
-                        <th class="admin__table__header">Audio</th>
-                        <th class="admin__table__header">Delete</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for sermon in sermons %}
-                    <tr>
-                        <td class="admin__table__cell"><a href="/sermon/{{ sermon['id'] }}">{{ sermon['title'] }}</a>
-                        </td>
-                        <td class="admin__table__cell">{{ sermon['date'] }}</td>
-                        <td class="admin__table__cell">{{ sermon['speaker'] or "—" }}</td>
-                        <td class="admin__table__cell">{{ sermon['series']['name'] or "—" }}</td>
-                        <td class="admin__table__cell">{{ "✓" if sermon['audio_url'] else "✗" }}</td>
-                        <td class="admin__table__cell">
-                            <form method="POST" action="/admin/delete-sermon/{{ sermon.id }}">
-                                <button type="submit" class="button button--danger">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {% else %}
-        <p>No sermons yet.</p>
-        {% endif %}
-    </section>
+    <div class="bg-white col">
+
+    </div>
+  </div>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const thumbnails = document.querySelectorAll('.thumbnail');
-        const selectedImageUrlField = document.getElementById('selectedImageUrl');
-        const fileInput = document.getElementById('seriesImageFile');
-
-        // Handle thumbnail clicks
-        thumbnails.forEach(thumbnail => {
-            thumbnail.addEventListener('click', function () {
-                const imageUrl = this.getAttribute('data-image-url');
-
-                // Set the hidden field with the selected image URL
-                selectedImageUrlField.value = imageUrl;
-
-                // Clear file input so existing image takes priority
-                fileInput.value = '';
-
-                // Visual feedback - add active class
-                thumbnails.forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-            });
-
-            // Make thumbnails look clickable
-            thumbnail.style.cursor = 'pointer';
-        });
-
-        // Clear selection if user picks a new file
-        fileInput.addEventListener('change', function () {
-            if (this.value) {
-                selectedImageUrlField.value = '';
-                thumbnails.forEach(t => t.classList.remove('active'));
-            }
-        });
-    });
-</script>
-<script src="{{ url_for('static', filename='functions.js') }}"></script>
 {% endblock %}

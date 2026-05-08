@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block navbar %} {% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <!-- Side Menu -->
+    <div class="bg-info col-auto vh-100 p-0">
+      <div class="bg-dark py-4 px-3 text-white">
+        <h3 class="d-none d-sm-inline">Sermon Manager</h3>
+        <h6>Admin</h6>
+      </div>
+      <div class="py-4 px-3">
+        <ul class="list-unstyled d-flex flex-column gap-2">
+          <li>
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span class="d-none d-sm-inline">Home</span>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fa-solid fa-book-bible fa-fw"></i>
+              <span class="d-none d-sm-inline">Manage Sermons</span>
+            </a>
+            <ul class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" href="/add-sermon"><i class="fa-solid fa-square-plus fa-fw"></i>
+                  <span class="d-none d-sm-inline">Add New Sermon</span>
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item"><i class="fa-solid fa-mountain-sun fa-fw"></i>
+                  <span class="d-none d-sm-inline">View All</span>
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="bg-white col d-flex flex-column m-0 p-0">
+      <div class="bg-white col-auto py-2">
+        <form class="form-inline mx-5">
+          <input class="form-control" type="search" placeholder="Search" aria-label="Search">
+        </form>
+      </div>
+      <div class="bg-secondary col p-xxl-5">
+        <h2 class="ps-2 pt-2 ps-xxl-5">Add a sermon</h2>
+        <div class="px-xxl-5">
+          <form method="POST" action="/admin/add-sermon" enctype="multipart/form-data">
+            <div class="form-group px-2 mb-3">
+              <label>Title</label>
+              <input type="text" class="form-control" name="Title" required>
+            </div>
+            <div class="form-group px-2 mb-3">
+              <label>Speaker</label>
+              <input type="text" class="form-control" name="Speaker" required>
+            </div>
+            <div class="form-group px-2 mb-3">
+              <label>Audio URL</label>
+              <input type="text" class="form-control" name="AudioURL" required>
+              <small class="form-text text-muted">Use the .mp3 file link only.</small>
+            </div>
+            <div class="form-group px-2 mb-3 col-12 col-xxl-6">
+              <label>Book</label>
+              <input type="text" class="form-control" name="Book">
+              <small class="form-text text-muted">Do not add the chapter and verse.</small>
+            </div>
+            <div class="form-group px-2 mb-3 col-xxl-6">
+              <label>Topic(s)</label>
+              <input type="text" class="form-control" name="Topic">
+              <small class="form-text text-muted">Separate multiple topics with commas</small>
+            </div>
+
+            <div class="form-group px-2 mb-3 col-xxl-3">
+              <label>Date</label>
+              <input type="date" name="Date" required>
+            </div>
+            <div class="custom-file px-2 mb-3 col-xxl-9">
+              <label>Featured Image</label>
+              <input class="custom-file-input" name="image" type="file" accept="image/*">
+            </div>
+
+            <div class="form-group px-2 ">
+              <select class="custom-select mb-3" name="series_id">
+                <option value="">-- No Series --</option>
+                {% for s in series %}
+                <option value="{{ s.id }}">{{ s.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <button class="mx-2" type="submit">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const thumbnails = document.querySelectorAll('.thumbnail');
+    const selectedImageUrlField = document.getElementById('selectedImageUrl');
+    const fileInput = document.getElementById('seriesImageFile');
+
+    // Handle thumbnail clicks
+    thumbnails.forEach(thumbnail => {
+      thumbnail.addEventListener('click', function () {
+        const imageUrl = this.getAttribute('data-image-url');
+
+        // Set the hidden field with the selected image URL
+        selectedImageUrlField.value = imageUrl;
+
+        // Clear file input so existing image takes priority
+        fileInput.value = '';
+
+        // Visual feedback - add active class
+        thumbnails.forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+      });
+
+      // Make thumbnails look clickable
+      thumbnail.style.cursor = 'pointer';
+    });
+
+    // Clear selection if user picks a new file
+    fileInput.addEventListener('change', function () {
+      if (this.value) {
+        selectedImageUrlField.value = '';
+        thumbnails.forEach(t => t.classList.remove('active'));
+      }
+    });
+  });
+</script>
+{% endblock %}
