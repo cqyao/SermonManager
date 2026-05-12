@@ -214,8 +214,12 @@ def admin():
 
 @app.route("/add-sermon")
 def add_new_sermon():
-    
-    return render_template("add-sermon.html")
+    images = []
+    image_metadata = supabase.storage.from_("images").list()
+    for filename in image_metadata: 
+        image_url = supabase.storage.from_("images").get_public_url(filename['name'])
+        images.append(image_url)
+    return render_template("add-sermon.html", images=images)
 
 # Add series
 @app.route("/admin/add-series", methods=["POST"])

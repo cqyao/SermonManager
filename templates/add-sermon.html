@@ -13,9 +13,11 @@
       </div>
       <div class="py-4 px-3">
         <ul class="list-unstyled d-flex flex-column gap-2">
-          <li>
-            <i class="fa-solid fa-house fa-fw"></i>
-            <span class="d-none d-sm-inline">Home</span>
+          <li class="nav-item">
+            <a class="nav-link active" href="/">
+              <i class="fa-solid fa-house fa-fw"></i>
+              <span class="d-none d-sm-inline">Home</span>
+            </a>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -61,6 +63,15 @@
               <input type="text" class="form-control" name="AudioURL" required>
               <small class="form-text text-muted">Use the .mp3 file link only.</small>
             </div>
+            <div class="d-flex form-group px-2 flex-column col-xxl-4">
+              <label>Sermon Series</label>
+              <select class="custom-select mb-3" name="series_id">
+                <option value="">-- No Series --</option>
+                {% for s in series %}
+                <option value="{{ s.id }}">{{ s.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
             <div class="form-group px-2 mb-3 col-12 col-xxl-6">
               <label>Book</label>
               <input type="text" class="form-control" name="Book">
@@ -72,24 +83,62 @@
               <small class="form-text text-muted">Separate multiple topics with commas</small>
             </div>
 
-            <div class="form-group px-2 mb-3 col-xxl-3">
+            <div class="d-flex flex-column px-2 mb-3 col-xxl-3">
               <label>Date</label>
               <input type="date" name="Date" required>
             </div>
-            <div class="custom-file px-2 mb-3 col-xxl-9">
+            <div class="d-flex flex-column px-2 mb-3 col-xxl-9">
               <label>Featured Image</label>
-              <input class="custom-file-input" name="image" type="file" accept="image/*">
-            </div>
+              <button type="button" class="btn btn-sm col-xxl-3 btn-link text-start ps-0" data-bs-toggle="modal" role="dialog"
+                data-bs-target="#modal">
+                Set Featured Image
+              </button>
 
-            <div class="form-group px-2 ">
-              <select class="custom-select mb-3" name="series_id">
-                <option value="">-- No Series --</option>
-                {% for s in series %}
-                <option value="{{ s.id }}">{{ s.name }}</option>
-                {% endfor %}
-              </select>
+              <!-- Featured Image Modal -->
+              <div class="modal fade" id="modal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-xl" role="document">
+                  <div class="modal-content p-3">
+                    <div class="modal-title">
+                      <h4>Featured Image</h4>
+                    </div>
+                    <!-- Tab Navigation -->
+                    <ul class="nav nav-tabs" id="tab" role="tablist">
+                      <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="upload-tab" data-bs-toggle="tab" data-bs-target="#upload"
+                          type="button" role="tab">
+                          Upload Image
+                        </button>
+                      </li>
+                      <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="media-tab" data-bs-toggle="tab" data-bs-target="#media"
+                          type="button" role="tab">
+                          Media Library
+                        </button>
+                      </li>
+                    </ul>
+                    <!-- Tab Content -->
+                    <div class="tab-content" id="tabContent">
+                      <div class="tab-pane show active" id="upload" role="tabpanel">
+                        <input class="custom-file-input mt-3" id="sermonImage" name="image" type="file" accept="image/*">
+                      </div>
+                      <div class="tab-pane" id="media" role="tabpanel">
+                        <input type="hidden" name="selected_image_url" id="selectedImageUrl" value="">
+                        <div class="row" id="thumbnailContainer">
+                          {% for image in images %}
+                          <img src="{{ image }}" class="thumbnail w-25 h-25 col-3" data-image-url="{{ image }}">
+                          {% endfor %}
+                        </div>
+                      </div>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-sm col-4 mt-4" data-bs-target="#modal" data-bs-toggle="modal">Set Featured Image</button>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-3">
+                <img id="imagePreview" class="d-none rounded w-25" alt="Selected image preview">
+              </div>
             </div>
-            <button class="mx-2" type="submit">Submit</button>
+            <button class="mx-2 btn btn-secondary" type="submit">Submit</button>
           </form>
         </div>
       </div>
@@ -104,7 +153,8 @@
   document.addEventListener('DOMContentLoaded', function () {
     const thumbnails = document.querySelectorAll('.thumbnail');
     const selectedImageUrlField = document.getElementById('selectedImageUrl');
-    const fileInput = document.getElementById('seriesImageFile');
+    const fileInput = document.getElementById('sermonImage');
+    const imagePreview = document.getElementById('imagePreview');
 
     // Handle thumbnail clicks
     thumbnails.forEach(thumbnail => {
@@ -120,6 +170,10 @@
         // Visual feedback - add active class
         thumbnails.forEach(t => t.classList.remove('active'));
         this.classList.add('active');
+
+        // Show preview
+        imagePreview.src = imageUrl;
+        imagePreview.classList.remove('d-none');
       });
 
       // Make thumbnails look clickable
@@ -131,6 +185,14 @@
       if (this.value) {
         selectedImageUrlField.value = '';
         thumbnails.forEach(t => t.classList.remove('active'));
+        
+        // Show preview of uploaded file
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          imagePreview.src = e.target.result;
+          imagePreview.classList.remove('d-none');
+        };
+        reader.readAsDataURL(this.files[0]);
       }
     });
   });

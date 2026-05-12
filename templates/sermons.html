@@ -8,8 +8,9 @@
 <!-- MOST RECENT SERMON -->
 <a class="recent vh-100" href="/sermon/{{ sermons[0]['id'] }}">
   <div class="position-relative p-4 bg-secondary text-center">
-    <i class="fa-solid fa-circle-play fa-4x position-absolute top-50 start-50 translate-middle text-white"></i>
-    <img class="w-100 rounded-5 mt-3 " src="{{ sermons[0]['image_url'] }}">
+    <i class="fa-solid fa-circle-play fa-4x position-absolute top-50 start-50 translate-middle text-white d-none d-md-inline"></i>
+    <i class="fa-solid fa-circle-play fa-2x position-absolute top-50 start-50 translate-middle text-white d-inline d-md-none"></i>
+    <img class="w-50 rounded-5 mt-3 img-fluid" src="{{ sermons[0]['image_url'] }}">
   </div>
   <div class="d-flex flex-column justify-content-center align-items-center bg-secondary px-5 sticky-top z-n1">
     <h5 class="text-primary mt-4 mb-3 fw-light">Latest Sermon</h5>

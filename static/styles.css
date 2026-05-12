@@ -38,3 +38,16 @@ a {
 .shadow-top {
   box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
 }
+
+.thumbnail {
+  box-sizing: border-box;
+  border: 3px solid transparent;
+  transition: border-color 0.2s ease;
+  object-fit: cover;
+  display: block;
+}
+
+.thumbnail.active {
+    border: 3px solid #2563eb !important;
+    border-radius: 4px;
+}
