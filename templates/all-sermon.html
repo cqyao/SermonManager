@@ -1,0 +1,59 @@
+{% extends "admin-base.html" %}
+
+{% block admin_content %}
+<div class="bg-secondary col p-xxl-5">
+  <div class="d-flex flex-row card p-2 rounded-0">
+    <div class="col-2">
+      <h6 class="mb-0">Title</h6>
+    </div>
+    <div class="col-2">
+      <h6 class="mb-0">Speaker</h6>
+    </div>
+    <div class="col-2">
+      <h6 class="mb-0">Series</h6>
+    </div>
+    <div class="col-2">
+      <h6 class="mb-0">Date</h6>
+    </div>
+    <div class="col-2">
+      <h6 class="mb-0">Books</h6>
+    </div>
+    <div class="col-2">
+      <h6 class="mb-0">Topic</h6>
+    </div>
+  </div>
+  {% for sermon in sermons %}
+  <div class="sermon-info-container card p-2 pb-4 rounded-0">
+    <div class="d-flex flex-row">
+      <div class="col-2">
+        <small class=" fw-bold">{{ sermon.title }}</small>
+      </div>
+      <div class="col-2">
+        <small class="">{{ sermon.speaker }}</small>
+      </div>
+      <div class="col-2">
+        <small class="">{{ sermon.series.name if sermon.series else "No Series" }}</small>
+      </div>
+      <div class="col-2">
+        <small class="">{{ sermon.date|format_date }}</small>
+      </div>
+      <div class="col-2">
+        <small class="">{{ sermon.book }}</small>
+      </div>
+      <div class="col-2">
+        <small class="">{{ sermon.topic }}</small>
+      </div>
+    </div>
+    <div class="hover-links col-12">
+      <a href="/edit-sermon/{{ sermon.id }}"><small class="">Edit</small></a>
+      <span>|</span>
+      <a href="/sermon/{{ sermon.id }}"><small class="">View</small></a>
+      <span>|</span>
+      <a href="#"><small class="text-danger">Delete</small></a>
+      <span>|</span>
+
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

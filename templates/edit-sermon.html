@@ -1,0 +1,162 @@
+{% extends "admin-base.html" %}
+
+{% block admin_content %}
+      <div class="bg-white col-auto py-2">
+        <form class="form-inline mx-5">
+          <input class="form-control" type="search" placeholder="Search" aria-label="Search">
+        </form>
+      </div>
+      <div class="bg-secondary col p-xxl-5">
+        <h2 class="ps-2 pt-2 ps-xxl-5">Add a sermon</h2>
+        <div class="px-xxl-5">
+          <form method="POST" action="/admin/edit-sermon/{{ sermon.id }}" enctype="multipart/form-data">
+            <div class="form-group px-2 mb-3">
+              <label>Title</label>
+              <input type="text" class="form-control" name="Title" value="{{ sermon.title }}" required>
+            </div>
+            <div class="form-group px-2 mb-3">
+              <label>Speaker</label>
+              <input type="text" class="form-control" name="Speaker" value="{{ sermon.speaker }}" required>
+            </div>
+            <div class="form-group px-2 mb-3">
+              <label>Audio URL</label>
+              <input type="text" class="form-control" name="AudioURL" value="{{ sermon.audio_url }}" required>
+              <small class="form-text text-muted">Use the .mp3 file link only.</small>
+            </div>
+            <div class="d-flex form-group px-2 flex-column col-xxl-4">
+              <label>Sermon Series</label>
+              <select class="custom-select mb-3" name="series_id">
+                <option value="">-- No Series --</option>
+                {% for s in series %}
+                <option value="{{ s.id }}">{{ s.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group px-2 mb-3 col-12 col-xxl-6">
+              <label>Book</label>
+              <input type="text" class="form-control" name="Book" value="{{ sermon.book }}">
+              <small class="form-text text-muted">Do not add the chapter and verse.</small>
+            </div>
+            <div class="form-group px-2 mb-3 col-xxl-6">
+              <label>Topic(s)</label>
+              <input type="text" class="form-control" name="Topic" value="{{ sermon.topic }}">
+              <small class="form-text text-muted">Separate multiple topics with commas</small>
+            </div>
+            <div class="d-flex d-row">
+              <div class="d-flex flex-column px-2 mb-3 col-xxl-3">
+                <label>Date</label>
+                <input type="date" name="Date" value="{{ sermon.date }}" required>
+              </div>
+              <div class="d-flex flex-column px-2 mb-3 ms-4 col-xxl-9">
+                <div class="d-flex flex-row">
+                  <div class="d-flex flex-column text-nowrap">
+                    <label>Featured Image</label>
+                    <button type="button" class="btn btn-sm col-xxl-3 btn-link text-start ps-0" data-bs-toggle="modal"
+                      role="dialog" data-bs-target="#modal">
+                      Set Featured Image
+                    </button>
+                  </div>
+                  <div class="col-6">
+                    <img id="imagePreview" class="d-none rounded w-25 img-thumbnail" alt="Selected image preview">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Featured Image Modal -->
+              <div class="modal fade" id="modal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-xl" role="document">
+                  <div class="modal-content p-3">
+                    <div class="modal-title">
+                      <h4>Featured Image</h4>
+                    </div>
+                    <!-- Tab Navigation -->
+                    <ul class="nav nav-tabs" id="tab" role="tablist">
+                      <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="upload-tab" data-bs-toggle="tab" data-bs-target="#upload"
+                          type="button" role="tab">
+                          Upload Image
+                        </button>
+                      </li>
+                      <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="media-tab" data-bs-toggle="tab" data-bs-target="#media"
+                          type="button" role="tab">
+                          Media Library
+                        </button>
+                      </li>
+                    </ul>
+                    <!-- Tab Content -->
+                    <div class="tab-content" id="tabContent">
+                      <div class="tab-pane show active" id="upload" role="tabpanel">
+                        <input class="custom-file-input mt-3" id="sermonImage" name="image" type="file"
+                          accept="image/*">
+                      </div>
+                      <div class="tab-pane" id="media" role="tabpanel">
+                        <input type="hidden" name="selected_image_url" id="selectedImageUrl" value="">
+                        <div class="row" id="thumbnailContainer">
+                          {% for image in images %}
+                          <img src="{{ image }}" class="thumbnail w-25 h-25 col-3" data-image-url="{{ image }}">
+                          {% endfor %}
+                        </div>
+                      </div>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-sm col-4 mt-4" data-bs-target="#modal"
+                      data-bs-toggle="modal">Set Featured Image</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button class="mx-2 btn btn-secondary" type="submit">Submit</button>
+          </form>
+        </div>
+      </div>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const thumbnails = document.querySelectorAll('.thumbnail');
+    const selectedImageUrlField = document.getElementById('selectedImageUrl');
+    const fileInput = document.getElementById('sermonImage');
+    const imagePreview = document.getElementById('imagePreview');
+
+    // Handle thumbnail clicks
+    thumbnails.forEach(thumbnail => {
+      thumbnail.addEventListener('click', function () {
+        const imageUrl = this.getAttribute('data-image-url');
+
+        // Set the hidden field with the selected image URL
+        selectedImageUrlField.value = imageUrl;
+
+        // Clear file input so existing image takes priority
+        fileInput.value = '';
+
+        // Visual feedback - add active class
+        thumbnails.forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+
+        // Show preview
+        imagePreview.src = imageUrl;
+        imagePreview.classList.remove('d-none');
+      });
+
+      // Make thumbnails look clickable
+      thumbnail.style.cursor = 'pointer';
+    });
+
+    // Clear selection if user picks a new file
+    fileInput.addEventListener('change', function () {
+      if (this.value) {
+        selectedImageUrlField.value = '';
+        thumbnails.forEach(t => t.classList.remove('active'));
+
+        // Show preview of uploaded file
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          imagePreview.src = e.target.result;
+          imagePreview.classList.remove('d-none');
+        };
+        reader.readAsDataURL(this.files[0]);
+      }
+    });
+  });
+</script>
+{% endblock %}

@@ -46,10 +46,18 @@ def load_user(user_id):
         return User("1")
     return None
 
+# Global functions
+@app.context_processor
+def inject_series():
+    """Make series available on all templates"""
+    series_response = supabase.table("series").select("*").order("name").execute()
+    return dict(series=series_response.data or [])
 
-#ROUTES
+@app.template_filter("format_date")
+def format_date(value):
+    return datetime.strptime(value, "%Y-%m-%d").strftime("%B %d, %Y")
 
-# Helper function to get all sermons in a series
+# Helper functions
 def get_sermons_by_series(series_id):
     """Returns all sermons from a particular series, ordered by date (newest first)"""
     response = supabase.table("sermons") \
@@ -59,6 +67,60 @@ def get_sermons_by_series(series_id):
         .execute()
     return response.data or []
 
+def get_all_sermons_with_series(order_by="date", desc=True):
+    """Fetches all sermons with series info, ordered by specified field"""
+    response = supabase.table("sermons") \
+        .select("*, series:series_id(name)") \
+        .order(order_by, desc=desc) \
+        .execute()
+    return response.data or []
+
+def get_sermon_by_id(sermon_id):
+    """Fetches a single sermon with series info"""
+    response = supabase.table("sermons") \
+        .select("*, series:series_id(name)") \
+        .eq("id", sermon_id) \
+        .single() \
+        .execute()
+    return response.data
+
+def get_available_images():
+    """Returns list of public URLs for all available images"""
+    images = []
+    image_metadata = supabase.storage.from_("images").list()
+    for filename in image_metadata:
+        image_url = supabase.storage.from_("images").get_public_url(filename['name'])
+        images.append(image_url)
+    return images
+
+def handle_image_upload(form_field_name="image"):
+    """
+    Handles image upload from form or selected existing image.
+    Returns the image URL or None if no image provided.
+    """
+    image_url = None
+    
+    # First, check if user selected an existing image
+    selected_image_url = request.form.get("selected_image_url", "").strip()
+    if selected_image_url:
+        image_url = selected_image_url
+    # Otherwise, handle uploading a new image if provided
+    elif form_field_name in request.files:
+        file = request.files[form_field_name]
+        if file.filename != "":
+            extension = file.filename.rsplit(".", 1)[-1]
+            filename = f"{uuid.uuid4()}.{extension}"
+            
+            supabase.storage.from_("images").upload(
+                path=filename,
+                file=file.read(),
+                file_options={"content-type": file.content_type}
+            )
+            image_url = supabase.storage.from_("images").get_public_url(filename)
+    
+    return image_url
+
+#ROUTES
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -89,25 +151,10 @@ def logout():
     logout_user()
     return redirect(url_for("index"))
 
-@app.context_processor
-def inject_series():
-    """Make series available on all templates"""
-    series_response = supabase.table("series").select("*").order("name").execute()
-    return dict(series=series_response.data or [])
-
-@app.template_filter("format_date")
-def format_date(value):
-    return datetime.strptime(value, "%Y-%m-%d").strftime("%B %d, %Y")
-
 # Home page
 @app.route("/")
 def index():
-    sermons_response = supabase.table("sermons") \
-        .select("*, series:series_id(name)") \
-        .order("date", desc=True) \
-        .execute()
-    sermons = sermons_response.data
-
+    sermons = get_all_sermons_with_series()
     return render_template("index.html", sermons=sermons)
 
 # All sermons
@@ -155,7 +202,6 @@ def sermons():
 
 # Individual series page
 @app.route("/series/<int:series_id>")
-@app.route("/sermon/")
 def series(series_id):
     series_response = supabase.table("series") \
         .select("*") \
@@ -175,104 +221,50 @@ def series(series_id):
 
 # Individual sermon page
 @app.route("/sermon/<int:sermon_id>")
+@app.route("/edit-sermon/<int:sermon_id>")
 def sermon(sermon_id):
-    response = supabase.table("sermons") \
-        .select("*, series:series_id(name)") \
-        .eq("id", sermon_id) \
-        .single() \
-        .execute()
-    sermon = response.data
+    sermon_data = get_sermon_by_id(sermon_id)
+    sermons = get_sermons_by_series(sermon_data["series_id"])
     
-    # Get all sermons from the same series
-    sermons = get_sermons_by_series(sermon["series_id"])
-    
-    return render_template("sermon.html", sermon=sermon, sermons=sermons)
+    if request.path.startswith("/edit-sermon/"):
+        return render_template("edit-sermon.html", sermon=sermon_data)
+    else: 
+        return render_template("sermon.html", sermon=sermon_data, sermons=sermons)
 
 # Admin page
 @app.route("/admin")
 @login_required
 def admin():
-    sermons_response = supabase.table("sermons") \
-        .select("*, series:series_id(name)") \
-        .order("date", desc=True) \
-        .execute()
-    sermons = sermons_response.data
-
-    series_response = supabase.table("series") \
-        .select("*") \
-        .execute()
+    sermons = get_all_sermons_with_series()
+    series_response = supabase.table("series").select("*").execute()
     series = series_response.data
-    
-    images = []
-    image_metadata = supabase.storage.from_("images").list()
-    for filename in image_metadata: 
-        image_url = supabase.storage.from_("images").get_public_url(filename['name'])
-        images.append(image_url)
-
-
-    return render_template("admin.html", sermons=sermons, series=series, images=images)
+    return render_template("admin.html", sermons=sermons, series=series)
 
 @app.route("/add-sermon")
 def add_new_sermon():
-    images = []
-    image_metadata = supabase.storage.from_("images").list()
-    for filename in image_metadata: 
-        image_url = supabase.storage.from_("images").get_public_url(filename['name'])
-        images.append(image_url)
+    images = get_available_images()
     return render_template("add-sermon.html", images=images)
+
+@app.route("/all-sermon")
+def all_sermon():
+    sermons = get_all_sermons_with_series()
+    return render_template("all-sermon.html", sermons=sermons)
 
 # Add series
 @app.route("/admin/add-series", methods=["POST"])
 def add_series():
-    image_url = None
-    
-    # First, check if user selected an existing image
-    selected_image_url = request.form.get("selected_image_url", "").strip()
-    if selected_image_url:
-        image_url = selected_image_url
-    # Otherwise, handle uploading a new image if provided
-    elif "image" in request.files:
-        file = request.files["image"]
-        if file.filename != "":
-            extension = file.filename.rsplit(".", 1)[-1]
-            filename = f"{uuid.uuid4()}.{extension}"
-            
-            supabase.storage.from_("images").upload(
-                path=filename,
-                file=file.read(),
-                file_options={"content-type": file.content_type}
-            )
-            image_url = supabase.storage.from_("images").get_public_url(filename)
-            
+    image_url = handle_image_upload()
     supabase.table("series").insert({
         "name": request.form["name"],
         "series_description": request.form["description"],
         "image_url": image_url
     }).execute()
-    
     return redirect(url_for("admin"))
 
 # Add sermon
 @app.route("/admin/add-sermon", methods=["POST"])
 def add_sermon():
-    image_url = None
-        # First, check if user selected an existing image
-    selected_image_url = request.form.get("selected_image_url", "").strip()
-    if selected_image_url:
-        image_url = selected_image_url
-    # Otherwise, handle uploading a new image if provided
-    elif "image" in request.files:
-        file = request.files["image"]
-        if file.filename != "":
-            extension = file.filename.rsplit(".", 1)[-1]
-            filename = f"{uuid.uuid4()}.{extension}"
-            
-            supabase.storage.from_("images").upload(
-                path=filename,
-                file=file.read(),
-                file_options={"content-type": file.content_type}
-            )
-            image_url = supabase.storage.from_("images").get_public_url(filename)
+    image_url = handle_image_upload()
     series_id = request.form["series_id"]
     supabase.table("sermons").insert({
         "title": request.form["Title"],
@@ -291,6 +283,21 @@ def add_sermon():
 def delete_sermon(sermon_id):
     supabase.table("sermons").delete().eq("id", sermon_id).execute()
     return redirect(url_for("admin"))
+
+@app.route("/admin/edit-sermon/<int:sermon_id>", methods=["POST"])
+def edit_sermon(sermon_id):
+    series_id = request.form["series_id"]
+    supabase.table("sermons").update({
+        "title": request.form["Title"],
+        "date": request.form["Date"],
+        "speaker": request.form["Speaker"],
+        "topic": request.form["Topic"],
+        "book": request.form["Book"],
+        "audio_url": request.form["AudioURL"],
+        "series_id": int(series_id) if series_id else None
+    }).eq("id", sermon_id).execute()
+    
+    return redirect(url_for("all_sermon"))
 
 if __name__ == "__main__":
     app.run(debug=True)

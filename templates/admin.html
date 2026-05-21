@@ -1,52 +1,9 @@
-{% extends "base.html" %}
+{% extends "admin-base.html" %}
 
 {% block styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
 {% endblock %}
 
-{% block navbar %} {% endblock %}
-
-{% block content %}
-<div class="container-fluid">
-  <div class="row">
-    <!-- Side Menu -->
-    <div class="bg-info col-auto vh-100 p-0">
-      <div class="bg-dark py-4 px-3 text-white">
-        <h3>Sermon Manager</h3>
-        <h6>Admin</h6>
-      </div>
-      <div class="py-4 px-3">
-        <ul class="list-unstyled d-flex flex-column gap-2">
-          <li class="nav-item">
-            <a class="nav-link active" href="/">
-              <i class="fa-solid fa-house fa-fw"></i>
-              <span class="d-none d-sm-inline">Home</span>
-            </a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="fa-solid fa-book-bible fa-fw"></i>
-              Manage Sermons
-            </a>
-            <ul class="dropdown-menu">
-              <li>
-                <a class="dropdown-item" href="/add-sermon"><i class="fa-solid fa-square-plus fa-fw"></i>
-                  Add New Sermon</a>
-              </li>
-              <li>
-                <a class="dropdown-item"><i class="fa-solid fa-mountain-sun fa-fw"></i>
-                  View all
-                </a>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div class="bg-white col">
-
-    </div>
-  </div>
-</div>
+{% block admin_content %}
 
 {% endblock %}
