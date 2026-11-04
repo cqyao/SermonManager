@@ -9,6 +9,11 @@
       <div class="bg-secondary col p-xxl-5">
         <h2 class="ps-2 pt-2 ps-xxl-5">Add a sermon</h2>
         <div class="px-xxl-5">
+          {% for category, message in get_flashed_messages(with_categories=true) %}
+          <div class="alert {{ 'alert-success' if category == 'success' else 'alert-danger' }}" role="alert">
+            {{ message }}
+          </div>
+          {% endfor %}
           <form method="POST" action="/admin/add-sermon" enctype="multipart/form-data">
             <div class="form-group px-2 mb-3">
               <label>Title</label>
@@ -31,14 +36,19 @@
                 <option value="{{ s.id }}">{{ s.name }}</option>
                 {% endfor %}
               </select>
+              <!-- Button to toggle "Add New Series" input -->
               <button type="button" class="btn btn-sm col-xxl-3 btn-link text-start ps-0" data-bs-toggle="collapse"
                 data-bs-target="#addSeriesInputCollapse" aria-expanded="false" aria-controls="addSeriesInputCollapse">
                 Add New Series
               </button>
               <div class="collapse" id="addSeriesInputCollapse">
-                <textarea class="form-control" name="addSeriesInput" id="addSeriesInput" rows="1"
-                  placeholder="Enter new series name"></textarea>
-                <button type="button" class="mt-2 btn btn-secondary" id="addSeriesButton">Add Series</button>
+                <input type="text" class="form-control" name="SeriesName" id="addSeriesName"
+                  placeholder="New series name">
+                <div id="addSeriesMessage" class="mt-2" role="status" aria-live="polite"></div>
+                <button type="submit" class="mt-2 btn btn-secondary" id="addSeriesButton"
+                  formaction="{{ url_for('add_series') }}" formnovalidate>
+                  Add Series
+                </button>
               </div>
             </div>
             <div class="form-group px-2 mb-3 col-12 col-xxl-6">
@@ -122,10 +132,56 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    const seriesInput = document.getElementById('addSeriesInput');
+    const seriesInput = document.getElementById('addSeriesName');
     const seriesInputCollapse = document.getElementById('addSeriesInputCollapse');
+    const addSeriesButton = document.getElementById('addSeriesButton');
+    const addSeriesMessage = document.getElementById('addSeriesMessage');
+    const seriesSelect = document.querySelector('select[name="series_id"]');
+
     seriesInputCollapse.addEventListener('shown.bs.collapse', function () {
       seriesInput.focus();
+    });
+
+    addSeriesButton.addEventListener('click', async function (event) {
+      event.preventDefault();
+      const seriesName = seriesInput.value.trim();
+      addSeriesMessage.className = 'mt-2';
+      addSeriesMessage.textContent = '';
+
+      if (!seriesName) {
+        addSeriesMessage.classList.add('text-danger');
+        addSeriesMessage.textContent = 'Enter a name for the new series.';
+        seriesInput.focus();
+        return;
+      }
+
+      addSeriesButton.disabled = true;
+      try {
+        const response = await fetch(addSeriesButton.formAction, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+          },
+          body: new URLSearchParams({ SeriesName: seriesName })
+        });
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || 'The series could not be added.');
+        }
+
+        const option = new Option(result.series.name, result.series.id, true, true);
+        seriesSelect.add(option);
+        seriesInput.value = '';
+        addSeriesMessage.classList.add('text-success');
+        addSeriesMessage.textContent = `Series "${result.series.name}" added.`;
+      } catch (error) {
+        addSeriesMessage.classList.add('text-danger');
+        addSeriesMessage.textContent = `Could not add series: ${error.message}`;
+      } finally {
+        addSeriesButton.disabled = false;
+      }
     });
 
     const thumbnails = document.querySelectorAll('.thumbnail');

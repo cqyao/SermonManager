@@ -5,7 +5,7 @@ import uuid
 from dotenv import load_dotenv
 
 
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, flash, jsonify, render_template, request, redirect, url_for
 import os
 from supabase import create_client
 from datetime import datetime
@@ -253,13 +253,25 @@ def all_sermon():
 # Add series
 @app.route("/admin/add-series", methods=["POST"])
 def add_series():
-    image_url = handle_image_upload()
-    supabase.table("series").insert({
-        "name": request.form["name"],
-        "series_description": request.form["description"],
-        "image_url": image_url
-    }).execute()
-    return redirect(url_for("admin"))
+    wants_json = request.accept_mimetypes.best == "application/json"
+    series_name = request.form.get("SeriesName", "").strip()
+    if not series_name:
+        if wants_json:
+            return jsonify(error="Enter a name for the new series."), 400
+        flash("Enter a name for the new series.", "error")
+        return redirect(url_for("add_new_sermon"))
+
+    response = supabase.table("series").insert({
+        "name": series_name
+    }).select("id, name").execute()
+    if not response.data:
+        raise RuntimeError("The new series was not returned after insertion.")
+
+    if wants_json:
+        return jsonify(series=response.data[0])
+
+    flash(f'Series "{series_name}" added.', "success")
+    return redirect(url_for("add_new_sermon"))
 
 # Add sermon
 @app.route("/admin/add-sermon", methods=["POST"])
@@ -314,5 +326,3 @@ def webhook():
     else:
         return 'Wrong event type', 400
     
-
-
