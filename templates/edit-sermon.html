@@ -31,7 +31,7 @@
             <div class="d-flex form-group px-2 flex-column col-xxl-4">
               <label>Sermon Series</label>
               <select class="custom-select mb-3" name="series_id">
-                <option value="">-- No Series --</option>
+                <option value="">{{sermon.series.name}}</option>
                 {% for s in series %}
                 <option value="{{ s.id }}">{{ s.name }}</option>
                 {% endfor %}

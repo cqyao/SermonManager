@@ -6,6 +6,7 @@
 
 {% block content %}
 <!-- MOST RECENT SERMON -->
+{% if sermons|length > 0 %}
 <a class="recent vh-100" href="/sermon/{{ sermons[0]['id'] }}">
   <div class="position-relative p-4 bg-secondary text-center">
     <i class="fa-solid fa-circle-play fa-4x position-absolute top-50 start-50 translate-middle text-white d-none d-md-inline"></i>
@@ -19,6 +20,7 @@
     </h5>
   </div>
 </a>
+{% endif %}
 <div class="p-4 section position-relative rounded-top-5 shadow-top">
   <h3 class="mb-0 fw-normal text-white">All Sermons</h3>
   <h6 class="fw-light text-white">Find all past sermons below</h6>
@@ -55,6 +57,10 @@
           <p class="card-text small">{{ sermon['date']|format_date }}</p>
         </div>
       </a>
+      {% else %}
+      <div class="col-12 text-center">
+        <h5>No sermons found.</h5>
+      </div>
       {% endfor %}
     </div>
   </div>
