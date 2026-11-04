@@ -1,3 +1,4 @@
 .env
 sermons.db
 __pycache__/
+.venv/

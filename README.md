@@ -12,5 +12,18 @@ Have a look at the website [here](https://cqyao.pythonanywhere.com/)
 
 _There are three branches in the repo: dev, test, and main. When implementing a new feature, use the 'dev' branch until ready to be tested. Then, move to 'test'. Once, the feature has been fully tested, commit changes to 'main'._
 
+## Local Python environment
 
+Create a separate virtual environment on each machine; do not copy or commit `.venv` between macOS and Windows. For example:
+
+- Windows: `py -m venv .venv`
+- macOS: `python3 -m venv .venv`
+
+Install the app dependencies after creating the environment:
+
+```shell
+python -m pip install -r requirements.txt
+```
+
+In VS Code, select the interpreter inside `.venv` once on each machine. The workspace default points to `.venv`, and each OS resolves the platform-specific executable.
 
