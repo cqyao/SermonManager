@@ -31,6 +31,15 @@
                 <option value="{{ s.id }}">{{ s.name }}</option>
                 {% endfor %}
               </select>
+              <button type="button" class="btn btn-sm col-xxl-3 btn-link text-start ps-0" data-bs-toggle="collapse"
+                data-bs-target="#addSeriesInputCollapse" aria-expanded="false" aria-controls="addSeriesInputCollapse">
+                Add New Series
+              </button>
+              <div class="collapse" id="addSeriesInputCollapse">
+                <textarea class="form-control" name="addSeriesInput" id="addSeriesInput" rows="1"
+                  placeholder="Enter new series name"></textarea>
+                <button type="button" class="mt-2 btn btn-secondary" id="addSeriesButton">Add Series</button>
+              </div>
             </div>
             <div class="form-group px-2 mb-3 col-12 col-xxl-6">
               <label>Book</label>
@@ -113,6 +122,12 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
+    const seriesInput = document.getElementById('addSeriesInput');
+    const seriesInputCollapse = document.getElementById('addSeriesInputCollapse');
+    seriesInputCollapse.addEventListener('shown.bs.collapse', function () {
+      seriesInput.focus();
+    });
+
     const thumbnails = document.querySelectorAll('.thumbnail');
     const selectedImageUrlField = document.getElementById('selectedImageUrl');
     const fileInput = document.getElementById('sermonImage');
