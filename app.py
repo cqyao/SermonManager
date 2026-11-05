@@ -20,7 +20,6 @@ import git
 
 #LOAD ENVIRONMENT VARIABLES FROM .ENV FILE
 load_dotenv()  
-
 #CREATE FLASK APP
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY")
@@ -311,14 +310,15 @@ def add_sermon():
         "series_id": int(series_id) if series_id else None
     }).execute()
     cache.delete_memoized(get_all_sermons_with_series)  # Clear cache to ensure new sermon appears
-    return redirect(url_for("admin"))
+    return redirect(url_for("all_sermon"))
 
 # Delete sermon
 @app.route("/admin/delete-sermon/<int:sermon_id>", methods=["POST"])
 def delete_sermon(sermon_id):
     supabase.table("sermons").delete().eq("id", sermon_id).execute()
+    flash("Sermon deleted successfully.")
     cache.delete_memoized(get_all_sermons_with_series)  # Clear cache to ensure deleted sermon is removed
-    return redirect(url_for("admin"))
+    return redirect(url_for("all_sermon"))
 
 @app.route("/admin/edit-sermon/<int:sermon_id>", methods=["POST"])
 def edit_sermon(sermon_id):
