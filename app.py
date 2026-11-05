@@ -264,7 +264,7 @@ def admin():
 @app.route("/add-sermon")
 def add_new_sermon():
     images = get_available_images()
-    cache.delete.memoized(get_all_sermons_with_series)  # Clear cache to ensure new sermon appears
+    cache.delete_memoized(get_all_sermons_with_series)  # Clear cache to ensure new sermon appears
     return render_template("add-sermon.html", images=images)
 
 @app.route("/all-sermon")
