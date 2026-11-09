@@ -22,3 +22,6 @@ python -m pip install -r requirements.txt
 
 In VS Code, select the interpreter inside `.venv` once on each machine. The workspace default points to `.venv`, and each OS resolves the platform-specific executable.
 
+## GitHub Actions Workflow
+The repo includes a GitHub Action that automates CI/CD processes. The Action checks for any changes from the specified remote branch and then pulls those changes. Next, the virtualenv is activated, requirements are installed from the requirements file, and a POST request is sent to PythonAnywhere to reload the web app. 
+While the Action does work, it is limited by needing to keep a BASH console open on PythonAnywhere. If the deployment fails, it's likely that the BASH console isn't open and active. To my knowledge, PythonAnywhere closes any console not on an active browser tab which isn't a problem if you're actively developing but it adds an extra step for infrequent deployments.
