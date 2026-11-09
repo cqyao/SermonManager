@@ -79,6 +79,8 @@ def format_date(value):
 # Helper functions
 def get_sermons_by_series(series_id):
     """Returns all sermons from a particular series, ordered by date (newest first)"""
+    if series_id is None:
+        return []
     response = supabase.table("sermons") \
         .select("*") \
         .eq("series_id", series_id) \
@@ -244,11 +246,16 @@ def series(series_id):
 @app.route("/edit-sermon/<int:sermon_id>")
 def sermon(sermon_id):
     sermon_data = get_sermon_by_id(sermon_id)
-    sermons = get_sermons_by_series(sermon_data["series_id"])
     
     if request.path.startswith("/edit-sermon/"):
-        return render_template("edit-sermon.html", sermon=sermon_data)
+        speaker_response = supabase.table("unique_speakers").select("speaker").order("speaker").execute()
+        return render_template(
+            "edit-sermon.html",
+            sermon=sermon_data,
+            speakers=speaker_response.data or []
+        )
     else: 
+        sermons = get_sermons_by_series(sermon_data["series_id"])
         return render_template("sermon.html", sermon=sermon_data, sermons=sermons)
 
 # Admin page
@@ -335,8 +342,6 @@ def edit_sermon(sermon_id):
     cache.delete_memoized(get_all_sermons_with_series)  # Clear cache to ensure updated sermon appears
     return redirect(url_for("all_sermon"))
 
-if __name__ == "__main__":
-    app.run(debug=True)
     
 # FOR GITHUB CI/CD AUTOMATION
 @app.route("/update_server", methods=['POST'])
@@ -350,3 +355,6 @@ def webhook():
     else:
         return 'Wrong event type', 400
     
+
+if __name__ == "__main__":
+    app.run(debug=True)

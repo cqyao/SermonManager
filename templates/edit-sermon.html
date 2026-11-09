@@ -19,9 +19,17 @@
               <label>Title</label>
               <input type="text" class="form-control" name="Title" value="{{ sermon.title }}" required>
             </div>
-            <div class="form-group px-2 mb-3">
+            <div class="d-flex form-group px-2 flex-column col-xxl-4">
               <label>Speaker</label>
-              <input type="text" class="form-control" name="Speaker" value="{{ sermon.speaker }}" required>
+              <select class="custom-select mb-3" name="Speaker">
+                <option value="{{ sermon.speaker }}" selected>{{ sermon.speaker }}</option>
+                {% for speaker in speakers %}
+                {% if speaker.speaker != sermon.speaker %}
+                <option value="{{ speaker.speaker }}">{{ speaker.speaker }}</option>
+                {% endif %}
+                {% endfor %}
+              </select>
+              <!-- <input type="text" class="form-control" name="Speaker" value="{{ sermon.speaker }}" required> -->
             </div>
             <div class="form-group px-2 mb-3">
               <label>Audio URL</label>
