@@ -20,10 +20,29 @@ import git
 
 #LOAD ENVIRONMENT VARIABLES FROM .ENV FILE
 load_dotenv()  
-
 #CREATE FLASK APP
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY")
+
+#FLASK CACHING SETUP
+from flask_caching import Cache
+
+cache = Cache(app, config={
+    "CACHE_TYPE": "FileSystemCache",
+    "CACHE_DIR": "/home/cqyao/flask_cache",
+    "CACHE_DEFAULT_TIMEOUT": 300,   # 5 minutes
+})
+
+@cache.memoize()
+def get_sermon_list():
+    return (
+        supabase.table("sermons")
+        .select("id,title,date,series:series_id(name,image_url)")  # only what the list shows
+        .order("date", desc=True)
+        .limit(50)
+        .execute()
+        .data
+    )
 
 #SUPABASE CLIENT
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
@@ -60,6 +79,8 @@ def format_date(value):
 # Helper functions
 def get_sermons_by_series(series_id):
     """Returns all sermons from a particular series, ordered by date (newest first)"""
+    if series_id is None:
+        return []
     response = supabase.table("sermons") \
         .select("*") \
         .eq("series_id", series_id) \
@@ -67,6 +88,7 @@ def get_sermons_by_series(series_id):
         .execute()
     return response.data or []
 
+@cache.memoize()
 def get_all_sermons_with_series(order_by="date", desc=True):
     """Fetches all sermons with series info, ordered by specified field"""
     response = supabase.table("sermons") \
@@ -224,11 +246,16 @@ def series(series_id):
 @app.route("/edit-sermon/<int:sermon_id>")
 def sermon(sermon_id):
     sermon_data = get_sermon_by_id(sermon_id)
-    sermons = get_sermons_by_series(sermon_data["series_id"])
     
     if request.path.startswith("/edit-sermon/"):
-        return render_template("edit-sermon.html", sermon=sermon_data)
+        speaker_response = supabase.table("unique_speakers").select("speaker").order("speaker").execute()
+        return render_template(
+            "edit-sermon.html",
+            sermon=sermon_data,
+            speakers=speaker_response.data or []
+        )
     else: 
+        sermons = get_sermons_by_series(sermon_data["series_id"])
         return render_template("sermon.html", sermon=sermon_data, sermons=sermons)
 
 # Admin page
@@ -243,6 +270,7 @@ def admin():
 @app.route("/add-sermon")
 def add_new_sermon():
     images = get_available_images()
+    cache.delete_memoized(get_all_sermons_with_series)  # Clear cache to ensure new sermon appears
     return render_template("add-sermon.html", images=images)
 
 @app.route("/all-sermon")
@@ -288,13 +316,16 @@ def add_sermon():
         "image_url": image_url,
         "series_id": int(series_id) if series_id else None
     }).execute()
-    return redirect(url_for("admin"))
+    cache.delete_memoized(get_all_sermons_with_series)  # Clear cache to ensure new sermon appears
+    return redirect(url_for("all_sermon"))
 
 # Delete sermon
 @app.route("/admin/delete-sermon/<int:sermon_id>", methods=["POST"])
 def delete_sermon(sermon_id):
     supabase.table("sermons").delete().eq("id", sermon_id).execute()
-    return redirect(url_for("admin"))
+    flash("Sermon deleted successfully.")
+    cache.delete_memoized(get_all_sermons_with_series)  # Clear cache to ensure deleted sermon is removed
+    return redirect(url_for("all_sermon"))
 
 @app.route("/admin/edit-sermon/<int:sermon_id>", methods=["POST"])
 def edit_sermon(sermon_id):
@@ -308,11 +339,9 @@ def edit_sermon(sermon_id):
         "audio_url": request.form["AudioURL"],
         "series_id": int(series_id) if series_id else None
     }).eq("id", sermon_id).execute()
-    
+    cache.delete_memoized(get_all_sermons_with_series)  # Clear cache to ensure updated sermon appears
     return redirect(url_for("all_sermon"))
 
-if __name__ == "__main__":
-    app.run(debug=True)
     
 # FOR GITHUB CI/CD AUTOMATION
 @app.route("/update_server", methods=['POST'])
@@ -326,3 +355,6 @@ def webhook():
     else:
         return 'Wrong event type', 400
     
+
+if __name__ == "__main__":
+    app.run(debug=True)

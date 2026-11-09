@@ -2,6 +2,11 @@
 
 {% block admin_content %}
 <div class="bg-secondary col p-xxl-5">
+  {% for message in get_flashed_messages() %}
+    <div class="alert alert-primary text-center mb-4" role="alert">{{ message }}</div>
+  {% endfor %}
+  <h4 class="alert-heading">All Sermons</h4>
+  <p class="mb-0">Below is a list of all sermons in the database. You can edit or delete any sermon from this page.</p>
   <div class="d-flex flex-row card p-2 rounded-0">
     <div class="col-2">
       <h6 class="mb-0">Title</h6>
@@ -49,7 +54,11 @@
       <span>|</span>
       <a href="/sermon/{{ sermon.id }}"><small class="">View</small></a>
       <span>|</span>
-      <a href="#"><small class="text-danger">Delete</small></a>
+      <form class="d-inline" method="POST" action="{{ url_for('delete_sermon', sermon_id=sermon.id) }}">
+        <button class="btn btn-link p-0 text-danger align-baseline text-decoration-none" type="submit">
+          <small>Delete</small>
+        </button>
+      </form>
       <span>|</span>
 
     </div>
