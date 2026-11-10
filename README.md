@@ -1,4 +1,5 @@
-Sermon Manager allows for an easy but visually appealing way to upload sermons online. It includes many important features like compiling sermons into different series, categorising them by topic or book, and filtering by the speaker. 
+## Why I Built This
+This project is entirely built and managed by myself with the goal being to continuously learn and improve my web development skillset. Also, it solves a problem that small churches have of not having a dedicated sermon audio hosting solution. Most of them use YouTube but that offers little freedom and functionality. With SermonManager, the operating cost is virtually free or can be scaled according to needs (for example, having a dedicated domain, or database storage).
 
 Sermon Manager is built on Flask for the backend, HTML and Javascript for the frontend, and Supabase handling the database and storage. This makes for an easy, modifiable system with the possibility of upgrades in the future in mind.
 
