@@ -4,6 +4,7 @@
     padding: 0 20px;
 }
 
+
 .sermons-container {
     max-width: 1200px;
     margin: 40px auto;
@@ -76,6 +77,10 @@
         max-width: 900px;
     }
 
+    .img-breakpoint {
+        width: 75%;
+    }
+
 }
 
 @media (width >=1440px) {
@@ -83,9 +88,15 @@
         grid-template-columns: repeat(3, 1fr);
     }
 
+
+
     .card__details {
         display: grid;
         grid-template-columns: repeat(1, 1fr);
         gap: 3px;
+    }
+
+    .img-breakpoint {
+        width: 60%;
     }
 }
