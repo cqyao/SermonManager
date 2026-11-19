@@ -14,28 +14,24 @@
             {{ message }}
           </div>
           {% endfor %}
-          <form method="POST" action="/admin/add-sermon" enctype="multipart/form-data">
-            <div class="form-group px-2 mb-3">
-              <label>Title</label>
-              <input type="text" class="form-control" name="Title" required>
+          <form method="post">
+            {{ form.hidden_tag() }}
+            <div class="form-group px-2 mb-3 d-flex flex-column">
+              {{ form.title.label }}
+              {{ form.title(class="form-control") }}
             </div>
-            <div class="form-group px-2 mb-3">
-              <label>Speaker</label>
-              <input type="text" class="form-control" name="Speaker" required>
+            <div class="form-group px-2 mb-3 d-flex flex-column">
+              {{ form.speaker.label }}
+              {{ form.speaker(class="form-control") }}
             </div>
-            <div class="form-group px-2 mb-3">
-              <label>Audio URL</label>
-              <input type="text" class="form-control" name="AudioURL" required>
+            <div class="form-group px-2 mb-3 d-flex flex-column">
+              {{ form.audio_url.label }}
+              {{ form.audio_url(class="form-control") }}
               <small class="form-text text-muted">Use the .mp3 file link only.</small>
             </div>
             <div class="d-flex form-group px-2 flex-column col-xxl-4">
-              <label>Sermon Series</label>
-              <select class="custom-select mb-3" name="series_id">
-                <option value="">-- No Series --</option>
-                {% for s in series %}
-                <option value="{{ s.id }}">{{ s.name }}</option>
-                {% endfor %}
-              </select>
+              {{ form.series_id.label }}
+              {{ form.series_id() }}
               <!-- Button to toggle "Add New Series" input -->
               <button type="button" class="btn btn-sm col-xxl-3 btn-link text-start ps-0" data-bs-toggle="collapse"
                 data-bs-target="#addSeriesInputCollapse" aria-expanded="false" aria-controls="addSeriesInputCollapse">
@@ -46,30 +42,30 @@
                   placeholder="New series name">
                 <div id="addSeriesMessage" class="mt-2" role="status" aria-live="polite"></div>
                 <button type="submit" class="mt-2 btn btn-secondary" id="addSeriesButton"
-                  formaction="{{ url_for('add_series') }}" formnovalidate>
+                  formaction="{{ url_for('admin.add_series') }}" formnovalidate>
                   Add Series
                 </button>
               </div>
             </div>
-            <div class="form-group px-2 mb-3 col-12 col-xxl-6">
-              <label>Book</label>
-              <input type="text" class="form-control" name="Book">
+            <div class="form-group px-2 mb-3 col-12 col-xxl-6 d-flex flex-column">
+              {{ form.book.label }}
+              {{ form.book() }}
               <small class="form-text text-muted">Do not add the chapter and verse.</small>
             </div>
-            <div class="form-group px-2 mb-3 col-xxl-6">
-              <label>Topic(s)</label>
-              <input type="text" class="form-control" name="Topic">
+            <div class="form-group px-2 mb-3 col-xxl-6 d-flex flex-column">
+              {{ form.topic.label }}
+              {{ form.topic() }}
               <small class="form-text text-muted">Separate multiple topics with commas</small>
             </div>
             <div class="d-flex d-row">
               <div class="d-flex flex-column px-2 mb-3 col-xxl-3">
-                <label>Date</label>
-                <input type="date" name="Date" required>
+                {{ form.date.label }}
+                {{ form.date() }}
               </div>
               <div class="d-flex flex-column px-2 mb-3 ms-4 col-xxl-9">
                 <div class="d-flex flex-row">
                   <div class="d-flex flex-column text-nowrap">
-                    <label>Featured Image</label>
+                    {{ form.image.label }}
                     <button type="button" class="btn btn-sm col-xxl-3 btn-link text-start ps-0" data-bs-toggle="modal"
                       role="dialog" data-bs-target="#modal">
                       Set Featured Image

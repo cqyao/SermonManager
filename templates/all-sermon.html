@@ -54,7 +54,7 @@
       <span>|</span>
       <a href="/sermon/{{ sermon.id }}"><small class="">View</small></a>
       <span>|</span>
-      <form class="d-inline" method="POST" action="{{ url_for('delete_sermon', sermon_id=sermon.id) }}">
+      <form class="d-inline" method="POST" action="{{ url_for('admin.delete_sermon', sermon_id=sermon.id) }}">
         <button class="btn btn-link p-0 text-danger align-baseline text-decoration-none" type="submit">
           <small>Delete</small>
         </button>

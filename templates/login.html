@@ -11,10 +11,19 @@
     {% if error %}
     <p class="error">{{ error }}</p>
     {% endif %}
+    {% if form %}
+    {% for field_errors in form.errors.values() %}
+    {% for field_error in field_errors %}
+    <p class="error">{{ field_error }}</p>
+    {% endfor %}
+    {% endfor %}
+    {% endif %}
   </div>
   <div class="login__form">
     <form method="post">
-      <label>Password: <input type="password" name="password" required></label>
+      {{ form.hidden_tag() }}
+      {{ form.password.label }}
+      {{ form.password() }}
       <button type="submit">Login</button>
     </form>
   </div>
